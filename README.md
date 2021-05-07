@@ -4,17 +4,22 @@
 <br/>
 
 # 팀소개
+
 ### 팀원
- 🤸🏻‍♀️ [Adela](https://github.com/adelakim5): 
- 🥳 [Eve](https://github.com/eve712): 
- 🍔 [Jung](https://github.com/rla36):  
- 🧚🏻‍♀️ [Jane](https://github.com/janeljs): 
+
+|이름|소개|
+|--|--|
+|🤸🏻‍♀️ [Adela](https://github.com/adelakim5)|11팀의 자존감 지킴이|
+|🥳 [Eve](https://github.com/eve712)|잠옷요정<br/>꼼꼼한 질문 요정|
+|🍔[Jung](https://github.com/rla36)|시크한 리액션부자|
+|🧚🏻‍♀️ [Jane](https://github.com/janeljs)|체력왕 <br/> 모닝을 깨우는 스크럼 요정|
+
 
 ### 팀 모토
- 🍰 결과보다는 과정에 집중하자!  
- 🧁 싸우지 말고 잘 지내자!  
- 🍩 즐겜하자! 아자아자!  
- 🍮 프론트 ↔ 백 간에 소통을 많이하자!  
+ 🍰 결과보다는 과정에 집중하자!    
+ 🍩 자책 노노! 죄송 멈춰!   
+ 🧁 즐겜하자! 아자아자!    
+ 🍮 프론트 ↔ 백 간에 소통을 많이하자!    
 
 <br/>
 
