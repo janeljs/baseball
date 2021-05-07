@@ -45,6 +45,8 @@
 ![image](https://user-images.githubusercontent.com/68000537/117391576-27bbb680-af2b-11eb-9f6a-7c9bd5241f3f.png)
 
 
-### API 구조
+### API 명세서
+👉 https://documenter.getpostman.com/view/15287546/TzRRBnRe
 
 ### ERD
+![ERD](https://user-images.githubusercontent.com/68000537/117412301-99a5f700-af4f-11eb-8895-8d51a76e17e5.png)
