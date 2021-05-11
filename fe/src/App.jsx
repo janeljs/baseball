@@ -27,50 +27,11 @@ const initialValue = {
 
 function App() {
   const [globalState, dispatch] = useReducer(reducer, initialValue);
-  // const [myTeam, setMyTeam] = useState(null);
-  // const [counterTeam, setCounterTeam] = useState(null);
-  // const [homeTeam, setHomeTeam] = useState(null);
-  // const [expeditionTeam, setExpeditionTeam] = useState(null);
-  // const [currInning, setCurrInning] = useState(null);
-  // const [currPitcher, setCurrPitcher] = useState(null);
-  // const [currHitter, setCurrHitter] = useState(null);
-  // const [currTeamLog, setCurrTeamLog] = useState([]);
-  // const [currS, setCurrS] = useState(0);
-  // const [currH, setCurrH] = useState(0);
-  // const [currB, setCurrB] = useState(0);
-  // const [currO, setCurrO] = useState(0);
-  // const [isResponseDone, setIsResponseDone] = useState(false);
 
   const baseballState = {
     teamInfo: {
       globalState,
       dispatch,
-      // myTeam,
-      // setMyTeam,
-      // counterTeam,
-      // setCounterTeam,
-      // homeTeam,
-      // setHomeTeam,
-      // expeditionTeam,
-      // setExpeditionTeam,
-      // currPitcher,
-      // setCurrPitcher,
-      // currHitter,
-      // setCurrHitter,
-      // currInning,
-      // setCurrInning,
-      // currTeamLog,
-      // setCurrTeamLog,
-      // currS,
-      // setCurrS,
-      // currH,
-      // setCurrH,
-      // currB,
-      // setCurrB,
-      // currO,
-      // setCurrO,
-      // isResponseDone,
-      // setIsResponseDone,
     },
   };
   return (

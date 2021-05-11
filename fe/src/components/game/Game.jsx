@@ -14,19 +14,14 @@ import TeamScore from "./TeamScore";
 import { getURL } from "../../data";
 
 const Game = () => {
-  // const { myTeam, counterTeam, homeTeam, expeditionTeam, currPitcher, currHitter, currInning, currTeamLog, isResponseDone, setIsResponseDone } = useContext(GlobalContext);
   const { globalState } = useContext(GlobalContext);
-  const { homeTeam, expeditionTeam, currPitcher, currHitter, currInning, currTeamLog, isResponseDone } = globalState;
-
-  // const isTeamSelected = localStorage.getItem("selectedTeams");
-  // if (isTeamSelected) setIsResponseDone(true);
+  const { homeTeam, expeditionTeam, currInning, currTeamLog, isResponseDone } = globalState;
 
   // 이닝 점수판 이벤트핸들러
   const handleMouseEnterOnPopup = async () => {
     const matchId = localStorage.getItem("matchId");
     const response = await fetch(getURL(`game/${matchId}/detailScore`));
     const detailScore = await response.json();
-    console.log(detailScore);
   };
 
   return (

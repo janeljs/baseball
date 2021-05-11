@@ -14,11 +14,7 @@ const SBO = (props) => {
       </SBOItem>
       <SBOItem>
         <SBOKind>B</SBOKind>
-        <SBOCount>
-          {Array(currB)
-            .fill(0)
-            .map(() => "🟢")}
-        </SBOCount>
+        <SBOCount>{Array.from({ length: currB }).map(() => "🟢")}</SBOCount>
       </SBOItem>
       <SBOItem>
         <SBOKind>O</SBOKind>

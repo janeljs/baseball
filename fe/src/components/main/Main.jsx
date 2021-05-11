@@ -39,10 +39,6 @@ const Main = () => {
       <Title />
       <Message />
       <TeamMatchContainer>
-        {/* {teamList &&
-          setMatches([...teamList]).map((teamSet) => {
-            return <Teams teamSet={teamSet} />;
-          })} */}
         {teamList.length > 0 &&
           [...teamList].map((teamSet) => {
             return <Teams teamSet={teamSet} />;

@@ -18,22 +18,8 @@ const Diamond = (props) => {
     dispatch({ type: "currB", init: true });
   };
 
-  // const getLastAction = (currHitterHistoryList) => {
-  //   if (!currHitterHistoryList.length) return "안타";
-
-  //   const lastHistory = currHitterHistoryList[currHitterHistoryList.length - 1];
-  //   let lastAction = null;
-  //   if (lastHistory.out === 1) lastAction = "아웃";
-  //   else if (lastHistory.ball === 4) lastAction = "볼넷";
-  //   else lastAction = "안타";
-
-  //   return lastAction;
-  // };
-
   const requestNextHitter = () => {
     const matchId = localStorage.getItem("matchId");
-    const currHitterHistoryList = JSON.parse(localStorage.getItem("currHitter")).currHitter.historyList;
-    // const lastAction = getLastAction(currHitterHistoryList);
 
     const request = async () => {
       const responseNextHitter = await fetch(getURL(`game/${matchId}/exchange`), {
