@@ -56,7 +56,7 @@ function App() {
           <Route exact path="/">
             <Main />
           </Route>
-          <Route path="/game">
+          <Route path="/baseballGame">
             <Game />
           </Route>
         </Switch>

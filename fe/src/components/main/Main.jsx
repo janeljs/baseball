@@ -20,41 +20,43 @@ const teamList = [
 ];
 
 const Main = () => {
-  // useEffect(() => {
-  //   fetch("http://ec2-15-165-82-124.ap-northeast-2.compute.amazonaws.com:8080/totalTeamList")
-  //     .then((res) => res.json())
-  //     .then((json) => setTeamList(json));
-  // }, []);
+  const [teamList, setTeamList] = useState(null);
 
-  // const setMatches = (teamList) => {
-  //   const result = [];
-  //   let match = [];
-  //   while (teamList.length) {
-  //     if (match.length < 2) {
-  //       const i = parseInt(Math.random() * teamList.length);
-  //       match.push(teamList[i]);
-  //       teamList.splice(i, 1);
-  //     }
-  //     if (match.length >= 2) {
-  //       result.push(match);
-  //       match = [];
-  //     }
-  //   }
-  //   return result;
-  // };
+  useEffect(() => {
+    fetch("http://52.78.64.148/totalTeamList")
+      .then((res) => res.json())
+      .then((json) => setTeamList(json));
+  }, []);
+
+  const setMatches = (teamList) => {
+    const result = [];
+    let match = [];
+    while (teamList.length) {
+      if (match.length < 2) {
+        const i = parseInt(Math.random() * teamList.length);
+        match.push(teamList[i]);
+        teamList.splice(i, 1);
+      }
+      if (match.length >= 2) {
+        result.push(match);
+        match = [];
+      }
+    }
+    return result;
+  };
 
   return (
     <>
       <Title />
       <Message />
       <TeamMatchContainer>
-        {/* {teamList &&
+        {teamList &&
           setMatches([...teamList]).map((teamSet) => {
             return <Teams teamSet={teamSet} />;
-          })} */}
-        {[...teamList].map((teamSet) => {
+          })}
+        {/* {[...teamList].map((teamSet) => {
           return <Teams teamSet={teamSet} />;
-        })}
+        })} */}
       </TeamMatchContainer>
     </>
   );

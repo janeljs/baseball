@@ -1,82 +1,97 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { GlobalContext } from "../../App";
-const mockData = {
-  inning: {
-    out: 0, // 전체 아웃인듯?
-    inningNumber: 1,
-    role: "수비",
-    cycle: "초",
-  },
-  nextHitter: {
-    playerBattingOrder: 2,
-    teamId: 1,
-    playerName: "eve",
-    historyList: [],
-  },
-  expeditionTeam: {
-    name: "Captain",
-    totalScore: 0,
-  },
-  homeTeam: {
-    name: "Twins",
-    totalScore: 0,
-  },
-  pitcher: {
-    role: "투수",
-    name: "Jung",
-    pitchCount: 0,
-    plateAppearances: 0,
-    hits: 0,
-  },
-  hitter: {
-    role: "타자",
-    name: "eve",
-    pitchCount: 0,
-    plateAppearances: 0,
-    hits: 0,
-  },
-  teamLog: {
-    playerLog: [
-      {
-        playerBattingOrder: 1,
-        teamId: 1,
-        playerName: "adela",
-        historyList: [
-          {
-            id: 1,
-            actionName: "S",
-            strike: 1,
-            ball: 0,
-            out: 0,
-          },
-          {
-            id: 2,
-            actionName: "S",
-            strike: 2,
-            ball: 0,
-            out: 0,
-          },
-          {
-            id: 3,
-            actionName: "S",
-            strike: 3,
-            ball: 0,
-            out: 1,
-          },
-        ],
-      },
-    ],
-  },
-};
+// const mockData = {
+//   inning: {
+//     out: 0, // 전체 아웃인듯?
+//     inningNumber: 1,
+//     role: "수비",
+//     cycle: "초",
+//   },
+//   nextHitter: {
+//     playerBattingOrder: 2,
+//     teamId: 1,
+//     playerName: "eve",
+//     historyList: [],
+//   },
+//   expeditionTeam: {
+//     name: "Captain",
+//     totalScore: 0,
+//   },
+//   homeTeam: {
+//     name: "Twins",
+//     totalScore: 0,
+//   },
+//   pitcher: {
+//     role: "투수",
+//     name: "Jung",
+//     pitchCount: 0,
+//     plateAppearances: 0,
+//     hits: 0,
+//   },
+//   hitter: {
+//     role: "타자",
+//     name: "eve",
+//     pitchCount: 0,
+//     plateAppearances: 0,
+//     hits: 0,
+//   },
+//   teamLog: {
+//     playerLog: [
+//       {
+//         playerBattingOrder: 1,
+//         teamId: 1,
+//         playerName: "adela",
+//         historyList: [
+//           {
+//             id: 1,
+//             actionName: "S",
+//             strike: 1,
+//             ball: 0,
+//             out: 0,
+//           },
+//           {
+//             id: 2,
+//             actionName: "S",
+//             strike: 2,
+//             ball: 0,
+//             out: 0,
+//           },
+//           {
+//             id: 3,
+//             actionName: "S",
+//             strike: 3,
+//             ball: 0,
+//             out: 1,
+//           },
+//         ],
+//       },
+//     ],
+//   },
+// };
 
 const Teams = ({ teamSet }) => {
   const { setMyTeam, setCounterTeam, setHomeTeam, setExpeditionTeam, setCurrHitter, setCurrPitcher, setCurrInning, setCurrTeamLog } = useContext(GlobalContext);
-  const setTeams = (teamName, teamId, idx) => {
+  const setTeams = async (teamName, teamId, idx) => {
     const counterTeamId = idx ? teamSet[0].id : teamSet[1].id;
     const counterTeamName = teamSet[idx ? 0 : 1].name;
     const isHome = idx === 1;
     // const homeTeam = isHome ? { id: teamId, name: teamName } : { id: counterTeamId, name: counterTeamName };
+
+    const res = await fetch("http://52.78.64.148/game", {
+      method: "post",
+      headers: {
+        "Content-type": "application/json",
+      },
+      body: {
+        myTeamId: teamId,
+        counterTeamId: counterTeamId,
+        isHome: isHome,
+      },
+    });
+    const mockData = await res.json();
+    console.log(mockData);
+
     setMyTeam({ id: teamId, name: teamName });
     setCounterTeam({ id: counterTeamId, name: counterTeamName });
     setHomeTeam(mockData.homeTeam);
@@ -121,7 +136,7 @@ const Teams = ({ teamSet }) => {
   return (
     <div>
       {teamSet.map((team, i) => (
-        <Link to="/game" onClick={() => setTeams(team.name, team.id, i)}>
+        <Link to="/baseballGame" onClick={() => setTeams(team.name, team.id, i)}>
           {team.name}
         </Link>
       ))}

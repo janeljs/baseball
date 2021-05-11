@@ -14,11 +14,6 @@ import TeamScore from "./TeamScore";
 
 const Game = () => {
   const { myTeam, counterTeam, homeTeam, expeditionTeam, currPitcher, currHitter, currInning, currTeamLog } = useContext(GlobalContext);
-  // useEffect(() => {
-  //   fetch("/api/")
-  //     .then((res) => res.json())
-  //     .then((res) => console.log(res));
-  // }, [homeTeam]);
 
   return (
     <>
