@@ -1,5 +1,5 @@
 import React from "react";
-import { detailScoreData } from "../../data";
+// import { detailScoreData } from "../../data";
 import styled from "styled-components";
 
 const DetailScorePopup = (props) => {
@@ -19,10 +19,10 @@ const DetailScorePopup = (props) => {
     });
   };
 
-  const [expedition, home] = scoreParser(detailScoreData);
-  console.log(expedition, home);
-  // const expedition = ["⚾️", "Captain", 1, 0, 0, 0, "", "", "", "", "", "", "", "", "1"];
-  // const home = ["", "Marvel", 1, 2, 2, "", "", "", "", "", "", "", "", "", "5"];
+  // const [expedition, home] = scoreParser(detailScoreData);
+  // console.log(expedition, home);
+  const expedition = ["⚾️", "Captain", 1, 0, 0, 0, "", "", "", "", "", "", "", "", "1"];
+  const home = ["", "Marvel", 1, 2, 2, "", "", "", "", "", "", "", "", "", "5"];
 
   return (
     <ScorePopup>

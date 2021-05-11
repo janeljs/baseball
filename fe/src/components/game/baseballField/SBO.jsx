@@ -3,7 +3,8 @@ import styled from "styled-components";
 import { GlobalContext } from "../../../App";
 
 const SBO = (props) => {
-  const { currS, currB, currO } = useContext(GlobalContext);
+  const { globalState } = useContext(GlobalContext);
+  const { currS, currB, currO } = globalState;
 
   return (
     <ul>

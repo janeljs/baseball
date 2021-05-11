@@ -1,14 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
+import { GlobalContext } from "../../App";
 
-const CurrentPlayer = ({ player }) => {
-  console.log(player);
+const CurrentPlayer = ({ playerRole }) => {
+  const { globalState } = useContext(GlobalContext);
+  const { currHitter, currPitcher } = globalState;
+
   return (
     <div>
-      <div>{player.role}</div>
+      <div>{playerRole}</div>
       <div>
-        <span>{player.name}</span>
+        <span>{playerRole === "투수" ? currPitcher.name : currHitter.name}</span>
         <span>
-          {player.role === "투수" ? `#${player.pitchCount}` : `${player.plateAppearances}타석 ${player.hits}안타`}
+          {playerRole === "투수"
+            ? `#${currPitcher.pitchCount}`
+            : `${currHitter.plateAppearances}타석 ${currHitter.hits}안타`}
         </span>
       </div>
     </div>

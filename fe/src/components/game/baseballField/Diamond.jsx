@@ -5,39 +5,36 @@ import { GlobalContext } from "../../../App";
 import { getURL } from "../../../data";
 
 const Diamond = (props) => {
-  const {
-    currInning,
-    setHomeTeam,
-    expeditionTeam,
-    setExpeditionTeam,
-    currHitter,
-    setCurrHitter,
-    setCurrPitcher,
-    currS,
-    setCurrS,
-    currH,
-    setCurrH,
-    currB,
-    setCurrB,
-    currO,
-    setCurrO,
-  } = useContext(GlobalContext);
+  const { globalState, dispatch } = useContext(GlobalContext);
+  const { currHitter, currS, currB, currO, currH, expeditionTeam, homeTeam, currInning } = globalState;
+
+  useEffect(() => {
+    const actionBoard = { currHitter, S: currS, B: currB, O: currO, H: currH };
+    localStorage.setItem("currHitter", JSON.stringify(actionBoard));
+  }, [currS, currB, currH, currO]);
 
   const resetSB = () => {
-    setCurrS(0);
-    setCurrB(0);
+    dispatch({ type: "currS", init: true });
+    dispatch({ type: "currB", init: true });
   };
+
+  // const getLastAction = (currHitterHistoryList) => {
+  //   if (!currHitterHistoryList.length) return "안타";
+
+  //   const lastHistory = currHitterHistoryList[currHitterHistoryList.length - 1];
+  //   let lastAction = null;
+  //   if (lastHistory.out === 1) lastAction = "아웃";
+  //   else if (lastHistory.ball === 4) lastAction = "볼넷";
+  //   else lastAction = "안타";
+
+  //   return lastAction;
+  // };
 
   const requestNextHitter = () => {
     const matchId = localStorage.getItem("matchId");
-    const getLastAction = (currHitterHistoryList) => {
-      const lastHistory = currHitterHistoryList[currHitterHistoryList.length - 1];
-      let lastAction = null;
-      if (lastHistory.out === 1) lastAction = "아웃!";
-      else if (lastHistory.ball === 4) lastAction = "볼넷!";
-      else lastAction = "안타!";
-      return lastAction;
-    };
+    const currHitterHistoryList = JSON.parse(localStorage.getItem("currHitter")).currHitter.historyList;
+    // const lastAction = getLastAction(currHitterHistoryList);
+
     const request = async () => {
       const responseNextHitter = await fetch(getURL(`game/${matchId}/exchange`), {
         method: "post",
@@ -49,12 +46,18 @@ const Diamond = (props) => {
           teamId: currHitter.teamId,
           playerName: currHitter.name,
           historyList: currHitter.historyList,
-          lastAction: getLastAction(currHitter.historyList),
+          lastAction: currHitter.lastAction,
           totalTeamScore: expeditionTeam.totalScore,
         }),
       });
+
       const nextHitterData = await responseNextHitter.json();
-      setCurrHitter({
+
+      console.log("---nextHitterData---");
+      console.log(nextHitterData);
+
+      dispatch({
+        type: "currHitter",
         role: nextHitterData.hitter.role,
         playerBattingOrder: nextHitterData.nextHitter.playerBattingOrder,
         teamId: nextHitterData.nextHitter.teamId,
@@ -65,51 +68,58 @@ const Diamond = (props) => {
         lastAction: null,
       });
     };
+
     request();
   };
 
   const nowPitchingTeam = currInning.cycle === "초" ? "homeTeam" : "expeditionTeam";
 
-  useEffect(() => {
-    const actionBoard = { currHitter, S: currS, B: currB, O: currO, H: currH };
-    localStorage.setItem("currHitter", JSON.stringify(actionBoard));
-  }, [currS, currB, currH, currO]);
-
   const throwBaseball = () => {
+    const { currPitcher } = globalState;
     const actions = ["S", "B", "H"];
     const selectedIndex = parseInt(Math.random() * actions.length);
     alert(`결과: ${actions[selectedIndex]}`); // 일단!!!
-    setCurrPitcher((obj) => {
-      return { ...obj, pitchCount: obj.pitchCount + 1 };
-    });
+
+    dispatch({ type: "currPitcher", pitchCount: currPitcher.pitchCount + 1 });
     if (actions[selectedIndex] === "S") {
       if (currS < 2) {
         // 스트라이크이고, 아웃이 아닐 때
-        setCurrS((currS) => currS + 1);
-        setCurrHitter((hitter) => {
-          const copiedHitter = JSON.parse(JSON.stringify(hitter));
-          copiedHitter.historyList.push({
-            id: copiedHitter.historyList.length + 1,
+        dispatch({ type: "currS", init: false, payload: 1 });
+        dispatch({
+          type: "currHitter",
+          role: currHitter.role,
+          playerBattingOrder: currHitter.playerBattingOrder,
+          teamId: currHitter.teamId,
+          hits: currHitter.hits,
+          name: currHitter.name,
+          historyList: JSON.parse(JSON.stringify(currHitter.historyList)).concat({
+            id: currHitter.historyList.length + 1,
             actionName: actions[selectedIndex],
             strike: currS + 1,
             ball: currB,
             out: currO,
-          });
-          return copiedHitter;
+          }),
+          plateAppearances: currHitter.plateAppearances,
+          lastAction: null,
         });
       } else {
         // 스트라이크이고, 아웃일 때
-        setCurrHitter((hitter) => {
-          const copiedHitter = JSON.parse(JSON.stringify(hitter));
-          copiedHitter.plateAppearances++;
-          copiedHitter.historyList.push({
-            id: copiedHitter.historyList.length + 1,
+        dispatch({
+          type: "currHitter",
+          role: currHitter.role,
+          plateAppearances: currHitter.plateAppearances + 1,
+          hits: currHitter.hits,
+          teamId: currHitter.teamId,
+          playerBattingOrder: currHitter.playerBattingOrder,
+          name: currHitter.name,
+          historyList: JSON.parse(JSON.stringify(currHitter.historyList)).concat({
+            id: currHitter.historyList.length + 1,
             actionName: actions[selectedIndex],
             strike: currS + 1,
             ball: currB,
             out: currO + 1, // db에 보내기 위한 용도로만 해줄 거니까 굳이 상태를 갱신해서 리렌더할 필요가 없음
-          });
-          return copiedHitter;
+          }),
+          lastAction: "아웃",
         });
 
         if (currO < 2) {
@@ -117,7 +127,8 @@ const Diamond = (props) => {
           resetSB();
           requestNextHitter();
           alert("선수 교체함다~");
-          setCurrO((currO) => currO + 1); // 빨간공 하나 적재 됨
+          // setCurrO((currO) => currO + 1); // 빨간공 하나 적재 됨
+          dispatch({ type: "currO", init: false, payload: 1 });
           // 데이터베이스에 다음 선수 정보 요청, 응답 받음
           // 응답 받으면 여기서 또 Teams에서 셋팅해준 로직과 같은 것을 수행해야 함
         } else {
@@ -130,48 +141,54 @@ const Diamond = (props) => {
       }
     } else if (actions[selectedIndex] === "B") {
       if (currB < 3) {
-        setCurrB((currB) => currB + 1);
-        setCurrHitter((hitter) => {
-          const newHitter = JSON.parse(JSON.stringify(hitter));
-          newHitter.historyList.push({
-            id: newHitter.historyList.length + 1,
+        dispatch({ type: "currB", init: false, payload: 1 });
+        dispatch({
+          type: "currHitter",
+          role: currHitter.role,
+          playerBattingOrder: currHitter.playerBattingOrder,
+          teamId: currHitter.teamId,
+          name: currHitter.name,
+          plateAppearances: currHitter.plateAppearances,
+          hits: currHitter.hits,
+          historyList: JSON.parse(JSON.stringify(currHitter.historyList)).concat({
+            id: currHitter.historyList.length + 1,
             actionName: actions[selectedIndex],
             strike: currS,
             ball: currB + 1,
             out: currO,
-          });
-          return newHitter;
+          }),
+          lastAction: null,
         });
       } else {
         alert("볼넷임다~");
         // 지금 타자 진루, 현재 나가있는 선수들도 모두 한칸씩 진루시킴
         // 만약에 홈으로 들어오는 선수가 있으면 현재 팀의 totalScore+1 해줘야 함
-        setCurrHitter((hitter) => {
-          const newHitter = JSON.parse(JSON.stringify(hitter));
-          newHitter.plateAppearances++;
-          newHitter.historyList.push({
-            id: newHitter.historyList.length + 1,
+
+        dispatch({
+          type: "currHitter",
+          role: currHitter.role,
+          playerBattingOrder: currHitter.playerBattingOrder,
+          teamId: currHitter.teamId,
+          name: currHitter.name,
+          plateAppearances: currHitter.plateAppearances + 1,
+          hits: currHitter.hits,
+          historyList: JSON.parse(JSON.stringify(currHitter.historyList)).concat({
+            id: currHitter.historyList.length + 1,
             actionName: actions[selectedIndex],
             strike: currS,
             ball: currB + 1,
             out: currO,
-          });
-          return newHitter;
+          }),
+          lastAction: "볼넷",
         });
+
         resetSB();
         requestNextHitter();
+
         if (nowPitchingTeam === "homeTeam") {
-          setExpeditionTeam((expedition) => {
-            const newExpedition = { ...expedition };
-            newExpedition.totalScore++;
-            return newExpedition;
-          });
+          dispatch({ type: "expeditionTeam", team: { ...expeditionTeam, totalScore: expeditionTeam.totalScore + 1 } });
         } else {
-          setHomeTeam((home) => {
-            const newHome = { ...home };
-            newHome.totalScore++;
-            return newHome;
-          });
+          dispatch({ type: "homeTeam", team: { ...homeTeam, totalScore: homeTeam.totalScore + 1 } });
         }
         // 데이터베이스에 다음 선수 정보 요청, 응답 받음 <- 이때 팀들의 totalScore도 데이터베이스에 저장함
         resetSB();
@@ -179,19 +196,25 @@ const Diamond = (props) => {
       }
     } else if (actions[selectedIndex] === "H") {
       alert("선수 교체함다~");
-      setCurrH((currH) => currH + 1);
-      setCurrHitter((hitter) => {
-        const newHitter = JSON.parse(JSON.stringify(hitter));
-        newHitter.plateAppearances++;
-        newHitter.hits++;
-        newHitter.historyList.push({
-          id: newHitter.historyList.length + 1,
+      // setCurrH((currH) => currH + 1);
+      dispatch({ type: "currH", init: false, payload: 1 });
+      dispatch({ type: "currH", init: false, payload: 1 });
+      dispatch({
+        type: "currHitter",
+        role: currHitter.role,
+        playerBattingOrder: currHitter.playerBattingOrder,
+        teamId: currHitter.teamId,
+        name: currHitter.name,
+        plateAppearances: currHitter.plateAppearances + 1,
+        hits: currHitter.hits + 1,
+        historyList: JSON.parse(JSON.stringify(currHitter.historyList)).concat({
+          id: currHitter.historyList.length + 1,
           actionName: actions[selectedIndex],
           strike: currS,
           ball: currB,
           out: currO,
-        });
-        return newHitter;
+        }),
+        lastAction: "안타",
       });
       resetSB();
       requestNextHitter();

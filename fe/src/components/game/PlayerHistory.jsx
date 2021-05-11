@@ -4,10 +4,14 @@ import { GlobalContext } from "../../App";
 
 // history: currTeamLog에 있는 지난 선수들 기록
 const PlayerHistory = ({ history }) => {
-  const { currHitter } = useContext(GlobalContext);
-  let currHitterLocal = null;
-  const currHitterInfo = localStorage.getItem("currHitter");
-  if (currHitterInfo) currHitterLocal = currHitterInfo.currHitter;
+  // const { currHitter } = useContext(GlobalContext);
+  const { globalState } = useContext(GlobalContext);
+  const { currHitter } = globalState;
+  console.log(currHitter);
+
+  // let currHitterLocal = null;
+  // const currHitterInfo = localStorage.getItem("currHitter");
+  // if (currHitterInfo) currHitterLocal = currHitterInfo.currHitter;
 
   const actionType = {
     S: "스트라이크",
@@ -26,50 +30,28 @@ const PlayerHistory = ({ history }) => {
   return (
     <PlayerHistoryContainer>
       {/*styled-component*/}
-      {currHitterLocal ? (
-        <CurrPlayer>
-          <div>
-            {/* {currHitter.playerBattingOrder}번 타자 {currHitter.name} */}
-            {currHitterLocal.playerBattingOrder}번 타자 {currHitterLocal.name}
-          </div>
-          )
-          <PlayerLog>
-            {currHitterLocal.historyList.length > 0 &&
-              [...currHitterLocal.historyList].map((historyLog, i) => {
-                return (
-                  <li>
-                    <span>{i + 1}</span>
-                    <span>{actionType[historyLog.actionName]}</span>
-                    <span>
-                      S{historyLog.strike} B{historyLog.ball}
-                    </span>
-                  </li>
-                );
-              })}
-          </PlayerLog>
-        </CurrPlayer>
-      ) : (
-        <CurrPlayer>
-          <div>
-            {currHitter.playerBattingOrder}번 타자 {currHitter.name}
-            {/* {currHitterLocal.playerBattingOrder}번 타자 {currHitterLocal.name} */}
-          </div>
-          <PlayerLog>
-            {currHitter.historyList.length > 0 &&
-              [...currHitter.historyList].map((historyLog, i) => {
-                return (
-                  <li>
-                    <span>{i + 1}</span>
-                    <span>{actionType[historyLog.actionName]}</span>
-                    <span>
-                      S{historyLog.strike} B{historyLog.ball}
-                    </span>
-                  </li>
-                );
-              })}
-          </PlayerLog>
-        </CurrPlayer>
-      )}
+      <CurrPlayer>
+        <div>
+          {currHitter.playerBattingOrder}번 타자 {currHitter.name}
+          {/* {currHitterLocal.playerBattingOrder}번 타자 {currHitterLocal.name} */}
+        </div>
+        )
+        <PlayerLog>
+          {currHitter.historyList.length > 0 &&
+            [...currHitter.historyList].map((historyLog, i) => {
+              return (
+                <li>
+                  <span>{i + 1}</span>
+                  <span>{actionType[historyLog.actionName]}</span>
+                  <span>
+                    S{historyLog.strike} B{historyLog.ball}
+                  </span>
+                </li>
+              );
+            })}
+        </PlayerLog>
+      </CurrPlayer>
+
       <PastPlayers>
         <div>
           {history.playerBattingOrder}번 타자 {history.playerName}

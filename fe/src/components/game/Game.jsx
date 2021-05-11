@@ -14,7 +14,9 @@ import TeamScore from "./TeamScore";
 import { getURL } from "../../data";
 
 const Game = () => {
-  const { myTeam, counterTeam, homeTeam, expeditionTeam, currPitcher, currHitter, currInning, currTeamLog, isResponseDone, setIsResponseDone } = useContext(GlobalContext);
+  // const { myTeam, counterTeam, homeTeam, expeditionTeam, currPitcher, currHitter, currInning, currTeamLog, isResponseDone, setIsResponseDone } = useContext(GlobalContext);
+  const { globalState } = useContext(GlobalContext);
+  const { homeTeam, expeditionTeam, currPitcher, currHitter, currInning, currTeamLog, isResponseDone } = globalState;
 
   // const isTeamSelected = localStorage.getItem("selectedTeams");
   // if (isTeamSelected) setIsResponseDone(true);
@@ -58,12 +60,12 @@ const Game = () => {
               {/* style-component*/}
               <CurrentPlayerContainer>
                 {/* style-component*/}
-                <CurrentPlayer player={currPitcher} />
-                <CurrentPlayer player={currHitter} />
+                <CurrentPlayer playerRole="투수" />
+                <CurrentPlayer playerRole="타자" />
               </CurrentPlayerContainer>
               <PlayerHistoryContainer>
                 {/* style-component*/}
-                {currTeamLog.length && [...currTeamLog].map((playerLog) => <PlayerHistory history={playerLog} />)}
+                {currTeamLog.length > 0 && [...currTeamLog].map((playerLog) => <PlayerHistory history={playerLog} />)}
               </PlayerHistoryContainer>
             </PlayerProgress>
             <TopPopupArea onMouseEnter={handleMouseEnterOnPopup}>
