@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { GlobalContext } from "../../App";
 import { getURL } from "../../data";
 
+const deepCopy = (arg) => JSON.parse(JSON.stringify(arg));
+
 const Teams = ({ teamSet }) => {
   const { dispatch } = useContext(GlobalContext);
 
@@ -29,45 +31,44 @@ const Teams = ({ teamSet }) => {
     console.log(initialGameData);
 
     const { expeditionTeam, homeTeam } = initialGameData;
-    if (innigNumber % 2 && cycle === "수비")
-      dispatch({ type: "currAttackTeam", team: JSON.parse(JSON.stringify(expeditionTeam)) });
-    if (!innigNumber % 2 && cycle === "공격")
-      dispatch({ type: "currAttackTeam", team: JSON.parse(JSON.stringify(homeTeam)) });
-    dispatch({ type: "myTeam", id: teamId, name: teamName });
-    dispatch({ type: "counterTeam", id: counterTeamId, name: counterTeamName });
-    dispatch({ type: "homeTeam", team: JSON.parse(JSON.stringify(initialGameData.homeTeam)) });
-    dispatch({ type: "expeditionTeam", team: JSON.parse(JSON.stringify(initialGameData.expeditionTeam)) });
-    dispatch({
-      type: "currPitcher",
-      role: initialGameData.pitcher.role,
-      name: initialGameData.pitcher.name,
-      pitchCount: initialGameData.pitcher.pitchCount,
-    });
-    dispatch({
-      type: "currHitter",
-      role: initialGameData.hitter.role,
-      playerBattingOrder: initialGameData.nextHitter.playerBattingOrder,
-      teamId: initialGameData.nextHitter.teamId,
-      historyList: JSON.parse(JSON.stringify(initialGameData.nextHitter.historyList)),
-      name: initialGameData.hitter.name,
-      plateAppearances: initialGameData.hitter.plateAppearances,
-      hits: initialGameData.hitter.hits,
-      lastAction: null,
-    });
+    if (innigNumber % 2 && cycle === "수비") dispatch({ type: "currAttackTeam", team: deepCopy(expeditionTeam) });
+    if (!innigNumber % 2 && cycle === "공격") dispatch({ type: "currAttackTeam", team: deepCopy(homeTeam) });
 
-    dispatch({
-      type: "currInning",
-      currInning: JSON.parse(JSON.stringify(initialGameData.inning)),
-    });
-    dispatch({
-      type: "currTeamLog",
-      currTeamLog: JSON.parse(JSON.stringify(initialGameData.teamLog.playerLog)),
-    });
+    [
+      { type: "myTeam", id: teamId, name: teamName },
+      { type: "counterTeam", id: counterTeamId, name: counterTeamName },
+      { type: "homeTeam", team: deepCopy(initialGameData.homeTeam) },
+      { type: "expeditionTeam", team: deepCopy(initialGameData.expeditionTeam) },
+      {
+        type: "currPitcher",
+        role: initialGameData.pitcher.role,
+        name: initialGameData.pitcher.name,
+        pitchCount: initialGameData.pitcher.pitchCount,
+      },
+      {
+        type: "currHitter",
+        role: initialGameData.hitter.role,
+        playerBattingOrder: initialGameData.nextHitter.playerBattingOrder,
+        teamId: initialGameData.nextHitter.teamId,
+        historyList: deepCopy(initialGameData.nextHitter.historyList),
+        name: initialGameData.hitter.name,
+        plateAppearances: initialGameData.hitter.plateAppearances,
+        hits: initialGameData.hitter.hits,
+        lastAction: null,
+      },
+      {
+        type: "currInning",
+        currInning: deepCopy(initialGameData.inning),
+      },
+      {
+        type: "currTeamLog",
+        currTeamLog: deepCopy(initialGameData.teamLog.playerLog),
+      },
+      { type: "isResponseDone" },
+    ].forEach((state) => dispatch(state));
 
     localStorage.setItem("selectedTeams", JSON.stringify({ myTeam: teamId, counterTeam: counterTeamId }));
     localStorage.setItem("matchId", initialGameData.matchId);
-
-    dispatch({ type: "isResponseDone" });
   };
 
   return (
