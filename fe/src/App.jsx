@@ -20,6 +20,7 @@ function App() {
   const [currH, setCurrH] = useState(0);
   const [currB, setCurrB] = useState(0);
   const [currO, setCurrO] = useState(0);
+  const [isResponseDone, setIsResponseDone] = useState(false);
 
   const baseballState = {
     teamInfo: {
@@ -47,6 +48,8 @@ function App() {
       setCurrB,
       currO,
       setCurrO,
+      isResponseDone,
+      setIsResponseDone,
     },
   };
   return (
@@ -56,7 +59,7 @@ function App() {
           <Route exact path="/">
             <Main />
           </Route>
-          <Route path="/game">
+          <Route path="/baseballGame">
             <Game />
           </Route>
         </Switch>
