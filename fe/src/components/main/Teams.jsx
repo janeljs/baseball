@@ -1,96 +1,30 @@
 import React, { useContext } from "react";
 import { Link } from "react-router-dom";
 import { GlobalContext } from "../../App";
-// const mockData = {
-//   inning: {
-//     out: 0, // 전체 아웃인듯?
-//     inningNumber: 1,
-//     role: "수비",
-//     cycle: "초",
-//   },
-//   nextHitter: {
-//     playerBattingOrder: 2,
-//     teamId: 1,
-//     playerName: "eve",
-//     historyList: [],
-//   },
-//   expeditionTeam: {
-//     name: "Captain",
-//     totalScore: 0,
-//   },
-//   homeTeam: {
-//     name: "Twins",
-//     totalScore: 0,
-//   },
-//   pitcher: {
-//     role: "투수",
-//     name: "Jung",
-//     pitchCount: 0,
-//     plateAppearances: 0,
-//     hits: 0,
-//   },
-//   hitter: {
-//     role: "타자",
-//     name: "eve",
-//     pitchCount: 0,
-//     plateAppearances: 0,
-//     hits: 0,
-//   },
-//   teamLog: {
-//     playerLog: [
-//       {
-//         playerBattingOrder: 1,
-//         teamId: 1,
-//         playerName: "adela",
-//         historyList: [
-//           {
-//             id: 1,
-//             actionName: "S",
-//             strike: 1,
-//             ball: 0,
-//             out: 0,
-//           },
-//           {
-//             id: 2,
-//             actionName: "S",
-//             strike: 2,
-//             ball: 0,
-//             out: 0,
-//           },
-//           {
-//             id: 3,
-//             actionName: "S",
-//             strike: 3,
-//             ball: 0,
-//             out: 1,
-//           },
-//         ],
-//       },
-//     ],
-//   },
-// };
+import { getURL } from "../../data";
 
 const Teams = ({ teamSet }) => {
-  const { setMyTeam, setCounterTeam, setHomeTeam, setExpeditionTeam, setCurrHitter, setCurrPitcher, setCurrInning, setCurrTeamLog } = useContext(GlobalContext);
+  const { setMyTeam, setCounterTeam, setHomeTeam, setExpeditionTeam, setCurrHitter, setCurrPitcher, setCurrInning, setCurrTeamLog, setIsResponseDone } = useContext(GlobalContext);
   const setTeams = async (teamName, teamId, idx) => {
     const counterTeamId = idx ? teamSet[0].id : teamSet[1].id;
     const counterTeamName = teamSet[idx ? 0 : 1].name;
     const isHome = idx === 1;
-    // const homeTeam = isHome ? { id: teamId, name: teamName } : { id: counterTeamId, name: counterTeamName };
+    const homeTeam = isHome ? { id: teamId, name: teamName } : { id: counterTeamId, name: counterTeamName };
 
-    const res = await fetch("http://52.78.64.148/game", {
+    // 데이터베이스에 현재팀, 반대팀 정보 저장하는 로직 짜기
+    const response = await fetch(getURL("game"), {
       method: "post",
       headers: {
-        "Content-type": "application/json",
+        "Content-Type": "application/json;charset=utf-8",
       },
-      body: {
+      body: JSON.stringify({
         myTeamId: teamId,
         counterTeamId: counterTeamId,
         isHome: isHome,
-      },
+      }),
     });
-    const mockData = await res.json();
-    console.log(mockData);
+    const mockData = await response.json();
+    console.log("/game", mockData);
 
     setMyTeam({ id: teamId, name: teamName });
     setCounterTeam({ id: counterTeamId, name: counterTeamName });
@@ -110,27 +44,13 @@ const Teams = ({ teamSet }) => {
       name: mockData.hitter.name,
       plateAppearances: mockData.hitter.plateAppearances,
       hits: mockData.hitter.hits,
+      lastAction: null,
     });
     setCurrInning(mockData.inning);
     setCurrTeamLog([...mockData.teamLog.playerLog]);
-
-    // 데이터베이스에 현재팀, 반대팀 정보 저장하는 로직 짜기
-    // useEffect(() => {
-    // fetch("http://ec2-15-165-82-124.ap-northeast-2.compute.amazonaws.com:8080/game", {
-    //   method: "post",
-    //   headers: {
-    //     accept: "application/json",
-    //     "Content-Type": "application/json;charset=UTF-8",
-    //   },
-    //   body: {
-    //     myTeamId: teamId,
-    //     counterTeamId: counterTeamId,
-    //     isHome: isHome,
-    //   },
-    // })
-    //   .then((res) => res.json())
-    //   .then((res) => console.log(res));
-    // }, []);
+    localStorage.setItem("selectedTeams", JSON.stringify({ myTeam: teamId, counterTeam: counterTeamId }));
+    localStorage.setItem("matchId", mockData.matchId);
+    setIsResponseDone(true);
   };
 
   return (

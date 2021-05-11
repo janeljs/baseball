@@ -1,6 +1,7 @@
 import React from "react";
 
 const CurrentPlayer = ({ player }) => {
+  console.log(player);
   return (
     <div>
       <div>{player.role}</div>

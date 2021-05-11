@@ -3,60 +3,50 @@ import styled from "styled-components";
 import Title from "../shared/Title";
 import Message from "./Message";
 import Teams from "./Teams";
+import { getURL } from "../../data";
 
-const teamList = [
-  [
-    { id: 1, name: "Captain" },
-    { id: 3, name: "Twins" },
-  ],
-  [
-    { id: 5, name: "Rockets" },
-    { id: 2, name: "Marvel" },
-  ],
-  [
-    { id: 4, name: "Tigers" },
-    { id: 6, name: "Dodgers" },
-  ],
-];
+const setMatches = (teamList) => {
+  const result = [];
+  let match = [];
+  while (teamList.length) {
+    if (match.length < 2) {
+      const i = parseInt(Math.random() * teamList.length);
+      match.push(teamList[i]);
+      teamList.splice(i, 1);
+    }
+    if (match.length >= 2) {
+      result.push(match);
+      match = [];
+    }
+  }
+  return result;
+};
 
 const Main = () => {
-  const [teamList, setTeamList] = useState(null);
+  const [teamList, setTeamList] = useState([]);
 
   useEffect(() => {
-    fetch("http://52.78.64.148/totalTeamList")
+    fetch(getURL("totalTeamList"))
       .then((res) => res.json())
-      .then((json) => setTeamList(json));
+      .then((json) => {
+        const matchedTeamList = setMatches(json);
+        setTeamList(matchedTeamList);
+      });
   }, []);
-
-  const setMatches = (teamList) => {
-    const result = [];
-    let match = [];
-    while (teamList.length) {
-      if (match.length < 2) {
-        const i = parseInt(Math.random() * teamList.length);
-        match.push(teamList[i]);
-        teamList.splice(i, 1);
-      }
-      if (match.length >= 2) {
-        result.push(match);
-        match = [];
-      }
-    }
-    return result;
-  };
 
   return (
     <>
       <Title />
       <Message />
       <TeamMatchContainer>
-        {teamList &&
+        {/* {teamList &&
           setMatches([...teamList]).map((teamSet) => {
             return <Teams teamSet={teamSet} />;
+          })} */}
+        {teamList.length > 0 &&
+          [...teamList].map((teamSet) => {
+            return <Teams teamSet={teamSet} />;
           })}
-        {/* {[...teamList].map((teamSet) => {
-          return <Teams teamSet={teamSet} />;
-        })} */}
       </TeamMatchContainer>
     </>
   );
