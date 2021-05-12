@@ -1,28 +1,30 @@
 import { pitchResult } from "../util";
-import { out } from "./out";
+import out from "./out";
 
 const { isThreeStrike } = pitchResult;
 
-const strike = (currSBO, currHitter, dispatch) => {
+const strike = (currSBO, currHitter, dispatch, ...fns) => {
   const { currS, currB, currO } = currSBO;
-  if (isThreeStrike) {
-    out(currO, currHitter, dispatch);
+  if (isThreeStrike(currS)) {
+    out(currSBO, currHitter, dispatch, ...fns);
     return;
   }
   dispatch({ type: "currS", init: false, payload: 1 });
 
-  const copyPreStateOfHitter = { ...currHitter };
-  copyPreStateOfHitter.historyList.push({
-    id: currHitter.historyList.length + 1,
-    actionName: actions[selectedIndex],
-    strike: currS + 1,
-    ball: currB,
-    out: currO,
-  });
+  const copiedPreStateOfHitter = {
+    ...currHitter,
+    historyList: currHitter.historyList.concat({
+      id: currHitter.historyList.length + 1,
+      actionName: "strike",
+      strike: currS + 1,
+      ball: currB,
+      out: currO,
+    }),
+  };
 
   dispatch({
     type: "currHitter",
-    ...copyPreStateOfHitter,
+    ...copiedPreStateOfHitter,
   });
 };
 
