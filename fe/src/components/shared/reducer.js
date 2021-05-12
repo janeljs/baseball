@@ -46,7 +46,7 @@ function reducer(state, action) {
     case "isResponseDone":
       return { ...state, isResponseDone: !state.isResponseDone };
     case "currAttackTeam":
-      return { ...state, currAttackTeam: { team: action.team } };
+      return { ...state, currAttackTeam: action.team };
   }
 }
 

@@ -6,7 +6,18 @@ import { getURL } from "../../../data";
 
 const Diamond = (props) => {
   const { globalState, dispatch } = useContext(GlobalContext);
-  const { currHitter, currS, currB, currO, currH, expeditionTeam, homeTeam, currInning, currTeamLog } = globalState;
+  const {
+    currHitter,
+    currS,
+    currB,
+    currO,
+    currH,
+    expeditionTeam,
+    homeTeam,
+    currInning,
+    currTeamLog,
+    currAttackTeam,
+  } = globalState;
 
   useEffect(() => {
     const actionBoard = { currHitter, S: currS, B: currB, O: currO, H: currH };
@@ -16,6 +27,10 @@ const Diamond = (props) => {
   const resetSB = () => {
     dispatch({ type: "currS", init: true });
     dispatch({ type: "currB", init: true });
+  };
+
+  const isEqual = (team1, team2) => {
+    return team1.name === team2.name;
   };
 
   const requestNextHitter = () => {
@@ -58,7 +73,7 @@ const Diamond = (props) => {
     request();
   };
 
-  const nowPitchingTeam = currInning.cycle === "초" ? "homeTeam" : "expeditionTeam";
+  // const nowPitchingTeam = currInning.cycle === "초" ? "homeTeam" : "expeditionTeam";
 
   const throwBaseball = () => {
     const { currPitcher } = globalState;
@@ -167,10 +182,12 @@ const Diamond = (props) => {
         resetSB();
         requestNextHitter();
 
-        if (nowPitchingTeam === "homeTeam") {
-          dispatch({ type: "expeditionTeam", team: { ...expeditionTeam, totalScore: expeditionTeam.totalScore + 1 } });
+        if (isEqual(currAttackTeam, expeditionTeam)) {
+          // 다이아몬드에 있는 선수 중 한명이 홈으로 들어와야지만 totalScore+1
+          dispatch({ type: "expeditionTeam", team: { ...expeditionTeam } });
         } else {
-          dispatch({ type: "homeTeam", team: { ...homeTeam, totalScore: homeTeam.totalScore + 1 } });
+          // 다이아몬드에 있는 선수 중 한명이 홈으로 들어와야지만 totalScore+1
+          dispatch({ type: "homeTeam", team: { ...homeTeam } });
         }
         // 데이터베이스에 다음 선수 정보 요청, 응답 받음 <- 이때 팀들의 totalScore도 데이터베이스에 저장함
         resetSB();
@@ -178,7 +195,6 @@ const Diamond = (props) => {
       }
     } else if (actions[selectedIndex] === "H") {
       alert("선수 교체함다~");
-      // setCurrH((currH) => currH + 1);
       dispatch({ type: "currH", init: false, payload: 1 });
       dispatch({ type: "currH", init: false, payload: 1 });
 
