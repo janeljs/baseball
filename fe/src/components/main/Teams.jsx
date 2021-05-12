@@ -27,12 +27,12 @@ const Teams = ({ teamSet }) => {
     });
 
     const initialGameData = await response.json();
-    const { innigNumber, cycle } = initialGameData.inning;
     console.log(initialGameData);
 
     const { expeditionTeam, homeTeam } = initialGameData;
-    if (innigNumber % 2 && cycle === "수비") dispatch({ type: "currAttackTeam", team: deepCopy(expeditionTeam) });
-    if (!innigNumber % 2 && cycle === "공격") dispatch({ type: "currAttackTeam", team: deepCopy(homeTeam) });
+
+    if (initialGameData.cycle === "초") dispatch({ type: "currAttackTeam", team: deepCopy(expeditionTeam) });
+    if (initialGameData.cycle === "말") dispatch({ type: "currAttackTeam", team: deepCopy(homeTeam) });
 
     [
       { type: "myTeam", id: teamId, name: teamName },

@@ -6,7 +6,7 @@ import { getURL } from "../../../data";
 
 const Diamond = (props) => {
   const { globalState, dispatch } = useContext(GlobalContext);
-  const { currHitter, currS, currB, currO, currH, expeditionTeam, homeTeam, currInning } = globalState;
+  const { currHitter, currS, currB, currO, currH, expeditionTeam, homeTeam, currInning, currTeamLog } = globalState;
 
   useEffect(() => {
     const actionBoard = { currHitter, S: currS, B: currB, O: currO, H: currH };
@@ -62,50 +62,51 @@ const Diamond = (props) => {
 
   const throwBaseball = () => {
     const { currPitcher } = globalState;
-    const actions = ["S", "B", "H"];
+    const actions = ["S", "S", "S"];
     const selectedIndex = parseInt(Math.random() * actions.length);
     alert(`결과: ${actions[selectedIndex]}`); // 일단!!!
 
-    dispatch({ type: "currPitcher", pitchCount: currPitcher.pitchCount + 1 });
+    // 도전
+    const copyPreStateOfPitcher = { ...currPitcher };
+    copyPreStateOfPitcher.pitchCount++;
+    dispatch({ type: "currPitcher", ...copyPreStateOfPitcher });
+
     if (actions[selectedIndex] === "S") {
       if (currS < 2) {
         // 스트라이크이고, 아웃이 아닐 때
         dispatch({ type: "currS", init: false, payload: 1 });
+
+        const currHitterActionLog = {
+          id: currHitter.historyList.length + 1,
+          actionName: actions[selectedIndex],
+          strike: currS + 1,
+          ball: currB,
+          out: currO,
+        };
+        const copyPreStateOfHitter = { ...currHitter };
+        copyPreStateOfHitter.historyList.push(currHitterActionLog);
+
         dispatch({
           type: "currHitter",
-          role: currHitter.role,
-          playerBattingOrder: currHitter.playerBattingOrder,
-          teamId: currHitter.teamId,
-          hits: currHitter.hits,
-          name: currHitter.name,
-          historyList: JSON.parse(JSON.stringify(currHitter.historyList)).concat({
-            id: currHitter.historyList.length + 1,
-            actionName: actions[selectedIndex],
-            strike: currS + 1,
-            ball: currB,
-            out: currO,
-          }),
-          plateAppearances: currHitter.plateAppearances,
-          lastAction: null,
+          ...copyPreStateOfHitter,
         });
       } else {
         // 스트라이크이고, 아웃일 때
+
+        const copyPreStateOfHitter = { ...currHitter };
+        copyPreStateOfHitter.plateAppearances++;
+        copyPreStateOfHitter.lastAction = "아웃";
+        copyPreStateOfHitter.historyList.push({
+          id: currHitter.historyList.length + 1,
+          actionName: actions[selectedIndex],
+          strike: currS + 1,
+          ball: currB,
+          out: currO + 1, // db에 보내기 위한 용도로만 해줄 거니까 굳이 상태를 갱신해서 리렌더할 필요가 없음
+        });
+
         dispatch({
           type: "currHitter",
-          role: currHitter.role,
-          plateAppearances: currHitter.plateAppearances + 1,
-          hits: currHitter.hits,
-          teamId: currHitter.teamId,
-          playerBattingOrder: currHitter.playerBattingOrder,
-          name: currHitter.name,
-          historyList: JSON.parse(JSON.stringify(currHitter.historyList)).concat({
-            id: currHitter.historyList.length + 1,
-            actionName: actions[selectedIndex],
-            strike: currS + 1,
-            ball: currB,
-            out: currO + 1, // db에 보내기 위한 용도로만 해줄 거니까 굳이 상태를 갱신해서 리렌더할 필요가 없음
-          }),
-          lastAction: "아웃",
+          ...copyPreStateOfHitter,
         });
 
         if (currO < 2) {
@@ -128,44 +129,39 @@ const Diamond = (props) => {
     } else if (actions[selectedIndex] === "B") {
       if (currB < 3) {
         dispatch({ type: "currB", init: false, payload: 1 });
+
+        const copyPreStateOfHitter = { ...currHitter };
+        copyPreStateOfHitter.push({
+          id: currHitter.historyList.length + 1,
+          actionName: actions[selectedIndex],
+          strike: currS,
+          ball: currB + 1,
+          out: currO,
+        });
+
         dispatch({
           type: "currHitter",
-          role: currHitter.role,
-          playerBattingOrder: currHitter.playerBattingOrder,
-          teamId: currHitter.teamId,
-          name: currHitter.name,
-          plateAppearances: currHitter.plateAppearances,
-          hits: currHitter.hits,
-          historyList: JSON.parse(JSON.stringify(currHitter.historyList)).concat({
-            id: currHitter.historyList.length + 1,
-            actionName: actions[selectedIndex],
-            strike: currS,
-            ball: currB + 1,
-            out: currO,
-          }),
-          lastAction: null,
+          ...copyPreStateOfHitter,
         });
       } else {
         alert("볼넷임다~");
         // 지금 타자 진루, 현재 나가있는 선수들도 모두 한칸씩 진루시킴
         // 만약에 홈으로 들어오는 선수가 있으면 현재 팀의 totalScore+1 해줘야 함
 
+        const copyPreStateOfHitter = { ...currHitter };
+        copyPreStateOfHitter.plateAppearances++;
+        copyPreStateOfHitter.lastAction = "볼넷";
+        copyPreStateOfHitter.push({
+          id: currHitter.historyList.length + 1,
+          actionName: actions[selectedIndex],
+          strike: currS,
+          ball: currB + 1,
+          out: currO,
+        });
+
         dispatch({
           type: "currHitter",
-          role: currHitter.role,
-          playerBattingOrder: currHitter.playerBattingOrder,
-          teamId: currHitter.teamId,
-          name: currHitter.name,
-          plateAppearances: currHitter.plateAppearances + 1,
-          hits: currHitter.hits,
-          historyList: JSON.parse(JSON.stringify(currHitter.historyList)).concat({
-            id: currHitter.historyList.length + 1,
-            actionName: actions[selectedIndex],
-            strike: currS,
-            ball: currB + 1,
-            out: currO,
-          }),
-          lastAction: "볼넷",
+          ...copyPreStateOfHitter,
         });
 
         resetSB();
@@ -185,22 +181,22 @@ const Diamond = (props) => {
       // setCurrH((currH) => currH + 1);
       dispatch({ type: "currH", init: false, payload: 1 });
       dispatch({ type: "currH", init: false, payload: 1 });
+
+      const copyPreStateOfHitter = { ...currHitter };
+      copyPreStateOfHitter.plateAppearances++;
+      copyPreStateOfHitter.hits++;
+      copyPreStateOfHitter.lastAction = "안타";
+      copyPreStateOfHitter.push({
+        id: currHitter.historyList.length + 1,
+        actionName: actions[selectedIndex],
+        strike: currS,
+        ball: currB,
+        out: currO,
+      });
+
       dispatch({
         type: "currHitter",
-        role: currHitter.role,
-        playerBattingOrder: currHitter.playerBattingOrder,
-        teamId: currHitter.teamId,
-        name: currHitter.name,
-        plateAppearances: currHitter.plateAppearances + 1,
-        hits: currHitter.hits + 1,
-        historyList: JSON.parse(JSON.stringify(currHitter.historyList)).concat({
-          id: currHitter.historyList.length + 1,
-          actionName: actions[selectedIndex],
-          strike: currS,
-          ball: currB,
-          out: currO,
-        }),
-        lastAction: "안타",
+        ...copyPreStateOfHitter,
       });
       resetSB();
       requestNextHitter();

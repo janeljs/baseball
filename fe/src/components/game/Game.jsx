@@ -60,7 +60,9 @@ const Game = () => {
               </CurrentPlayerContainer>
               <PlayerHistoryContainer>
                 {/* style-component*/}
-                {currTeamLog.length > 0 && [...currTeamLog].map((playerLog) => <PlayerHistory history={playerLog} />)}
+                <PlayerHistory flag="currPlayer" />
+                {currTeamLog.length > 0 &&
+                  [...currTeamLog].map((playerLog) => <PlayerHistory flag="pastPlayer" history={playerLog} />)}
               </PlayerHistoryContainer>
             </PlayerProgress>
             <TopPopupArea onMouseEnter={handleMouseEnterOnPopup}>

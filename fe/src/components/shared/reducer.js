@@ -14,9 +14,9 @@ function reducer(state, action) {
       return {
         ...state,
         currPitcher: {
-          role: action.role || state.currPitcher.role,
-          name: action.name || state.currPitcher.name,
-          pitchCount: action.pitchCount || 0,
+          role: action.role,
+          name: action.name,
+          pitchCount: action.pitchCount,
         },
       };
     case "currHitter":
