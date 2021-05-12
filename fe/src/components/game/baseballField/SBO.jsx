@@ -3,7 +3,8 @@ import styled from "styled-components";
 import { GlobalContext } from "../../../App";
 
 const SBO = (props) => {
-  const { currS, currB, currO } = useContext(GlobalContext);
+  const { globalState } = useContext(GlobalContext);
+  const { currS, currB, currO } = globalState;
 
   return (
     <ul>
@@ -13,11 +14,7 @@ const SBO = (props) => {
       </SBOItem>
       <SBOItem>
         <SBOKind>B</SBOKind>
-        <SBOCount>
-          {Array(currB)
-            .fill(0)
-            .map(() => "🟢")}
-        </SBOCount>
+        <SBOCount>{Array.from({ length: currB }).map(() => "🟢")}</SBOCount>
       </SBOItem>
       <SBOItem>
         <SBOKind>O</SBOKind>
