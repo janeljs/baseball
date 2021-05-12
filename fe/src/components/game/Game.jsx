@@ -11,18 +11,31 @@ import DetailScorePopup from "./DetailScorePopup";
 import PlayerHistory from "./PlayerHistory";
 import PlayerListPopup from "./PlayerListPopup";
 import TeamScore from "./TeamScore";
-import { getURL } from "../../data";
+import { getURL } from "../../utils/util";
 
 const Game = () => {
   const { globalState } = useContext(GlobalContext);
   const { homeTeam, expeditionTeam, currInning, currTeamLog, isResponseDone } = globalState;
+  const { popupState, setPopupState } = useState(null);
 
   // 이닝 점수판 이벤트핸들러
-  const handleMouseEnterOnPopup = async () => {
+  const handleMouseEnterOnPopup = async ({ target }, isTop) => {
     const matchId = localStorage.getItem("matchId");
-    const response = await fetch(getURL(`game/${matchId}/detailScore`));
-    const detailScore = await response.json();
+    const urlName = getURL(`game/${matchId}/${isTop ? "detailScore" : "playerListPopUp"}`);
+    const translateValue = `translateY(${isTop ? 880 : -880}px)`;
+
+    const response = await fetch(urlName);
+    const popupData = await response.json();
+
+    console.log(popupData);
+
+    setPopupState(popupData);
+
+    target.style.transform = translateValue;
+    target.style.background = `rgba(0, 0, 0, 0.9)`;
   };
+
+  const handleClickOutOfPopup = () => {};
 
   return (
     <>
@@ -62,13 +75,15 @@ const Game = () => {
                 {/* style-component*/}
                 <PlayerHistory flag="currPlayer" />
                 {currTeamLog.length > 0 &&
-                  [...currTeamLog].map((playerLog) => <PlayerHistory flag="pastPlayer" history={playerLog} />)}
+                  [...currTeamLog]
+                    .reverse()
+                    .map((playerLog) => <PlayerHistory flag="pastPlayer" history={playerLog} />)}
               </PlayerHistoryContainer>
             </PlayerProgress>
-            <TopPopupArea onMouseEnter={handleMouseEnterOnPopup}>
-              <DetailScorePopup />
+            {/* <TopPopupArea onMouseEnter={(e) => handleMouseEnterOnPopup(e, true)}>
+              <DetailScorePopup popupState={popupState} />
             </TopPopupArea>
-            {/* <BottomPopupArea>
+            <BottomPopupArea>
               <PlayerListPopup />
             </BottomPopupArea> */}
           </GameContainer>
@@ -139,8 +154,9 @@ const TopPopupArea = styled.section`
   display: flex;
   justify-content: center;
   position: absolute;
-  background: rgba(0, 0, 0, 0.9);
-  top: -930px;
+  top: -880px;
+  transition: 500ms;
+  // top: 0;
 `;
 const BottomPopupArea = styled.section`
   border: 1px solid blue;

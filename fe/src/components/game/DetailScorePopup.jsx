@@ -1,28 +1,24 @@
-import React from "react";
+import React, { useContext } from "react";
 // import { detailScoreData } from "../../data";
 import styled from "styled-components";
+import { GlobalContext } from "../../App";
+import { isEqual, scoreParser } from "../../utils/util";
 
-const DetailScorePopup = (props) => {
+const DetailScorePopup = ({ popupState }) => {
+  // console.log(popupState);
+
+  const { globalState } = useContext(GlobalContext);
+  const { currAttackTeam, expeditionTeam } = globalState;
+
   const tableHead = ["", "", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, "R"];
 
-  const scoreParser = (scoreData) => {
-    return scoreData.map((team) => {
-      let arr = Array(15).fill("");
-      let totalScore = 0;
-      team.teamGameScore.forEach((obj, i) => {
-        arr[i + 2] = obj.score;
-        totalScore += obj.score;
-      });
-      arr[1] = team.teamName;
-      arr[arr.length - 1] = totalScore;
-      return arr;
-    });
-  };
+  const [expedition, home] = scoreParser(popupState);
 
-  // const [expedition, home] = scoreParser(detailScoreData);
+  isEqual(currAttackTeam, expeditionTeam) ? (expedition[0] = "⚾️") : (home[0] = "⚾️");
+
   // console.log(expedition, home);
-  const expedition = ["⚾️", "Captain", 1, 0, 0, 0, "", "", "", "", "", "", "", "", "1"];
-  const home = ["", "Marvel", 1, 2, 2, "", "", "", "", "", "", "", "", "", "5"];
+  // const expedition = ["⚾️", "Captain", 1, 0, 0, 0, "", "", "", "", "", "", "", "", "1"];
+  // const home = ["", "Marvel", 1, 2, 2, "", "", "", "", "", "", "", "", "", "5"];
 
   return (
     <ScorePopup>

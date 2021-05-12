@@ -3,7 +3,7 @@ import styled from "styled-components";
 import Title from "../shared/Title";
 import Message from "./Message";
 import Teams from "./Teams";
-import { getURL } from "../../data";
+import { getURL } from "../../utils/util";
 
 const setMatches = (teamList) => {
   const result = [];

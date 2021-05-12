@@ -4,7 +4,7 @@ import "./App.css";
 import "./reset.css";
 import Main from "./components/main/Main";
 import Game from "./components/game/Game";
-import reducer from "./components/shared/reducer";
+import reducer from "./utils/reducer";
 
 export const GlobalContext = React.createContext();
 

@@ -44,7 +44,7 @@ function reducer(state, action) {
     case "currO":
       return { ...state, currO: action.init ? 0 : state.currO + action.payload };
     case "isResponseDone":
-      return { ...state, isResponseDone: !state.isResponseDone };
+      return { ...state, isResponseDone: true };
     case "currAttackTeam":
       return { ...state, currAttackTeam: action.team };
   }

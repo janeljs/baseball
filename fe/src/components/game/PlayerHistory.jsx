@@ -1,6 +1,7 @@
 import React, { useContext } from "react";
 import styled from "styled-components";
 import { GlobalContext } from "../../App";
+import { actionType } from "../../utils/util";
 
 // history: currTeamLog에 있는 지난 선수들 기록
 const PlayerHistory = ({ flag, history }) => {
@@ -10,12 +11,6 @@ const PlayerHistory = ({ flag, history }) => {
   // let currHitterLocal = null;
   // const currHitterInfo = localStorage.getItem("currHitter");
   // if (currHitterInfo) currHitterLocal = currHitterInfo.currHitter;
-
-  const actionType = {
-    S: "스트라이크",
-    B: "볼",
-    H: "안타",
-  };
 
   return (
     <PlayerHistoryContainer>
@@ -61,7 +56,6 @@ const PlayerHistory = ({ flag, history }) => {
           </PlayerLog>
         </PastPlayers>
       )}
-
       {/* pastPlayer, currPlayer를 공통된 컴포넌트로 만들 수 있을듯 */}
     </PlayerHistoryContainer>
   );
@@ -76,5 +70,9 @@ const PlayerLog = styled.ul`
   flex-direction: column-reverse;
 `;
 
-const CurrPlayer = styled.div``;
-const PastPlayers = styled.div``;
+const CurrPlayer = styled.div`
+  border: 1px solid blue;
+`;
+const PastPlayers = styled.div`
+  border: 1px solid red;
+`;

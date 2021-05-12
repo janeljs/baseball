@@ -1,8 +1,7 @@
 import React, { useContext, useEffect } from "react";
 import styled from "styled-components";
 import { GlobalContext } from "../../../App";
-// import PitchButton from "./PitchButton";
-import { getURL } from "../../../data";
+import { deepCopy, getURL, isEqual, requestPost } from "../../../utils/util";
 
 const Diamond = (props) => {
   const { globalState, dispatch } = useContext(GlobalContext);
@@ -29,55 +28,26 @@ const Diamond = (props) => {
     dispatch({ type: "currB", init: true });
   };
 
-  const isEqual = (team1, team2) => {
-    return team1.name === team2.name;
-  };
-
-  const requestNextHitter = () => {
+  const requestNextHitter = (currHitterLastAction) => {
     const matchId = localStorage.getItem("matchId");
 
-    const request = async () => {
-      const responseNextHitter = await fetch(getURL(`game/${matchId}/exchange`), {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json;charset=utf-8",
-        },
-        body: JSON.stringify({
-          playerBattingOrder: currHitter.playerBattingOrder,
-          teamId: currHitter.teamId,
-          playerName: currHitter.name,
-          historyList: currHitter.historyList,
-          lastAction: currHitter.lastAction,
-          totalTeamScore: expeditionTeam.totalScore,
-        }),
-      });
-
-      const nextHitterData = await responseNextHitter.json();
-
-      console.log("---nextHitterData---");
-      console.log(nextHitterData);
-
-      dispatch({
-        type: "currHitter",
-        role: nextHitterData.hitter.role,
-        playerBattingOrder: nextHitterData.nextHitter.playerBattingOrder,
-        teamId: nextHitterData.nextHitter.teamId,
-        historyList: [...nextHitterData.nextHitter.historyList],
-        name: nextHitterData.hitter.name,
-        plateAppearances: nextHitterData.hitter.plateAppearances,
-        hits: nextHitterData.hitter.hits,
-        lastAction: null,
-      });
-    };
-
-    request();
+    requestPost(
+      getURL(`game/${matchId}/exchange`),
+      {
+        playerBattingOrder: currHitter.playerBattingOrder,
+        teamId: currHitter.teamId,
+        playerName: currHitter.name,
+        historyList: currHitter.historyList,
+        lastAction: currHitterLastAction,
+        totalTeamScore: expeditionTeam.totalScore,
+      },
+      dispatch
+    );
   };
-
-  // const nowPitchingTeam = currInning.cycle === "초" ? "homeTeam" : "expeditionTeam";
 
   const throwBaseball = () => {
     const { currPitcher } = globalState;
-    const actions = ["S", "S", "S"];
+    const actions = ["strike", "strike", "strike"];
     const selectedIndex = parseInt(Math.random() * actions.length);
     alert(`결과: ${actions[selectedIndex]}`); // 일단!!!
 
@@ -86,7 +56,7 @@ const Diamond = (props) => {
     copyPreStateOfPitcher.pitchCount++;
     dispatch({ type: "currPitcher", ...copyPreStateOfPitcher });
 
-    if (actions[selectedIndex] === "S") {
+    if (actions[selectedIndex] === "strike") {
       if (currS < 2) {
         // 스트라이크이고, 아웃이 아닐 때
         dispatch({ type: "currS", init: false, payload: 1 });
@@ -108,26 +78,26 @@ const Diamond = (props) => {
       } else {
         // 스트라이크이고, 아웃일 때
 
-        const copyPreStateOfHitter = { ...currHitter };
-        copyPreStateOfHitter.plateAppearances++;
-        copyPreStateOfHitter.lastAction = "아웃";
-        copyPreStateOfHitter.historyList.push({
-          id: currHitter.historyList.length + 1,
-          actionName: actions[selectedIndex],
-          strike: currS + 1,
-          ball: currB,
-          out: currO + 1, // db에 보내기 위한 용도로만 해줄 거니까 굳이 상태를 갱신해서 리렌더할 필요가 없음
-        });
-
-        dispatch({
-          type: "currHitter",
-          ...copyPreStateOfHitter,
-        });
-
         if (currO < 2) {
           // 스트라이크, 아웃인데 팀 교체X, 선수만 교체
+          const copyPreStateOfHitter = { ...currHitter };
+          copyPreStateOfHitter.plateAppearances++;
+          copyPreStateOfHitter.lastAction = "아웃";
+          copyPreStateOfHitter.historyList.push({
+            id: currHitter.historyList.length + 1,
+            actionName: actions[selectedIndex],
+            strike: currS + 1,
+            ball: currB,
+            out: currO + 1, // db에 보내기 위한 용도로만 해줄 거니까 굳이 상태를 갱신해서 리렌더할 필요가 없음
+          });
+
+          dispatch({
+            type: "currHitter",
+            ...copyPreStateOfHitter,
+          });
+
           resetSB();
-          requestNextHitter();
+          requestNextHitter("아웃");
           alert("선수 교체함다~");
           // setCurrO((currO) => currO + 1); // 빨간공 하나 적재 됨
           dispatch({ type: "currO", init: false, payload: 1 });
@@ -141,12 +111,12 @@ const Diamond = (props) => {
           // 다음 공격팀, 투수, 타자 등의 전체 정보를 응답 받음, 여기서 또 Teams에서 셋팅해준 로직과 같은 것을 수행해야 함
         }
       }
-    } else if (actions[selectedIndex] === "B") {
+    } else if (actions[selectedIndex] === "ball") {
       if (currB < 3) {
         dispatch({ type: "currB", init: false, payload: 1 });
 
         const copyPreStateOfHitter = { ...currHitter };
-        copyPreStateOfHitter.push({
+        copyPreStateOfHitter.historyList.push({
           id: currHitter.historyList.length + 1,
           actionName: actions[selectedIndex],
           strike: currS,
@@ -166,7 +136,7 @@ const Diamond = (props) => {
         const copyPreStateOfHitter = { ...currHitter };
         copyPreStateOfHitter.plateAppearances++;
         copyPreStateOfHitter.lastAction = "볼넷";
-        copyPreStateOfHitter.push({
+        copyPreStateOfHitter.historyList.push({
           id: currHitter.historyList.length + 1,
           actionName: actions[selectedIndex],
           strike: currS,
@@ -180,7 +150,7 @@ const Diamond = (props) => {
         });
 
         resetSB();
-        requestNextHitter();
+        requestNextHitter("볼넷");
 
         if (isEqual(currAttackTeam, expeditionTeam)) {
           // 다이아몬드에 있는 선수 중 한명이 홈으로 들어와야지만 totalScore+1
@@ -193,7 +163,7 @@ const Diamond = (props) => {
         resetSB();
         // Teams 로직 또 수행 (아마도 필요한 부분만 수행하겟지...?)
       }
-    } else if (actions[selectedIndex] === "H") {
+    } else if (actions[selectedIndex] === "hit") {
       alert("선수 교체함다~");
       dispatch({ type: "currH", init: false, payload: 1 });
       dispatch({ type: "currH", init: false, payload: 1 });
@@ -202,7 +172,7 @@ const Diamond = (props) => {
       copyPreStateOfHitter.plateAppearances++;
       copyPreStateOfHitter.hits++;
       copyPreStateOfHitter.lastAction = "안타";
-      copyPreStateOfHitter.push({
+      copyPreStateOfHitter.historyList.push({
         id: currHitter.historyList.length + 1,
         actionName: actions[selectedIndex],
         strike: currS,
@@ -215,7 +185,7 @@ const Diamond = (props) => {
         ...copyPreStateOfHitter,
       });
       resetSB();
-      requestNextHitter();
+      requestNextHitter("안타");
     }
   };
 
