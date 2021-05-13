@@ -20,7 +20,7 @@ const Game = () => {
   // 이닝 점수판 이벤트핸들러
   const handleMouseEnterOnPopup = async ({ target }, isTop) => {
     const matchId = localStorage.getItem("matchId");
-    const urlName = getURL(`game/${matchId}/${isTop ? "detailScore" : "playerListPopUp"}`);
+    const urlName = getURL(`/${matchId}/record/${isTop ? "teams" : "players"}`);
     const translateValue = `translateY(${isTop ? 880 : -880}px)`;
 
     const response = await fetch(urlName);

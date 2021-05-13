@@ -3,7 +3,7 @@ import styled from "styled-components";
 
 const TeamScore = ({ isMyTeam, isHome, team }) => {
   return (
-    <TeamScoreContainer>
+    <TeamScoreContainer isHome={isHome}>
       <p>{team.totalScore}</p>
       <div>
         <p>{team.name}</p>

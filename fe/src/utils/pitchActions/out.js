@@ -24,6 +24,7 @@ const out = (currSBO, currHitter, dispatch, ...fns) => {
 
   if (isThreeOut(currO)) {
     alert("팀 교체함다~");
+    dispatch({ type: "currO", init: true });
     // 팀 교체 요청 보내기
   }
   fns.forEach((fn) => fn());

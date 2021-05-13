@@ -24,19 +24,25 @@ const Diamond = (props) => {
   const requestNextHitter = (currHitterLastAction) => {
     const matchId = localStorage.getItem("matchId");
     let totalTeamScore = currAttackTeam.totalScore;
-    const newDiamondQueue = [...diamondQueue, currHitter];
-    if (newDiamondQueue.length > 3) {
-      newDiamondQueue.shift();
-      totalTeamScore++;
-      dispatch({
-        type: "currAttackTeam",
-        team: { ...currAttackTeam, totalScore: currAttackTeam.totalScore + 1 },
-      });
+    const newDiamondQueue = [...diamondQueue];
+
+    if (currHitterLastAction === "안타" || currHitterLastAction === "볼넷") {
+      newDiamondQueue.push(currHitter);
+      if (newDiamondQueue.length > 3) {
+        newDiamondQueue.shift();
+        totalTeamScore++;
+        dispatch({
+          type: "currAttackTeam",
+          team: { ...currAttackTeam, totalScore: currAttackTeam.totalScore + 1 },
+        });
+      }
     }
+
     dispatch({
       type: "diamondQueue",
       diamondQueue: newDiamondQueue,
     });
+
     requestPost(
       getURL(`/${matchId}/exchange`),
       {
