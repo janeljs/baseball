@@ -59,7 +59,7 @@ const Diamond = (props) => {
 
   const handlePitch = () => {
     const { currPitcher } = globalState;
-    const actions = ["strike", "strike", "strike"];
+    const actions = ["hit", "strike", "strike", "strike", "ball", "ball", "ball"];
     const selectedIndex = parseInt(Math.random() * actions.length);
     const pitchResult = actions[selectedIndex];
     alert(`결과: ${pitchResult}`); // 일단!!!
@@ -89,8 +89,7 @@ const Diamond = (props) => {
   return (
     <DiamondField>
       <div>다이아몬드 경기장을 넣을 거임</div>
-      {/* <PitchButton /> */}
-      <button onClick={handlePitch}>pitch</button>
+      <PitchButton onClick={handlePitch}>PITCH</PitchButton>
     </DiamondField>
   );
 };
@@ -99,4 +98,21 @@ export default Diamond;
 
 const DiamondField = styled.div`
   width: 100%;
+  position: relative;
+`;
+
+const PitchButton = styled.button`
+  background: transparent;
+  outline: none;
+  border: 3px solid #eee;
+  border-radius: 10px;
+
+  font-size: 40px;
+  color: #eee;
+  cursor: pointer;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 `;

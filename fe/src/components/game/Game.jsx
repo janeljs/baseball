@@ -52,13 +52,9 @@ const Game = () => {
               {/* style-component*/}
               <MainScoreBoard>
                 {/* style-component*/}
-                <Title />
+                <Title isMain={false} />
                 <ScoreBox>
-                  <TeamScore
-                    isMyTeam={myTeam.name === expeditionTeam.name}
-                    isHome={false}
-                    team={expeditionTeam}
-                  />
+                  <TeamScore isMyTeam={myTeam.name === expeditionTeam.name} isHome={false} team={expeditionTeam} />
                   <span>VS</span>
                   <TeamScore isMyTeam={myTeam.name === homeTeam.name} isHome team={homeTeam} />
                 </ScoreBox>
@@ -112,10 +108,11 @@ const GameContainer = styled.section`
   display: flex;
   width: 1200px;
   height: 900px;
-  border: 1px solid red;
-  & div {
-    /* border: 1px solid black; */
-  }
+  background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)),
+    url("https://static.vecteezy.com/system/resources/previews/000/236/108/original/baseball-stadium-background-vector.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
   position: relative;
 `;
 
@@ -123,42 +120,49 @@ const GameProgress = styled.div`
   display: flex;
   width: 80%;
   flex-direction: column;
-  border: 1px solid black;
 `;
 
 const ScoreBox = styled.div`
   display: flex;
-  border: 1px solid black;
+  justify-content: space-between;
+  padding: 20px 70px;
+  position: relative;
+  span {
+    color: #777;
+    font-size: 40px;
+    font-weight: 900;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
 `;
 
 const MainScoreBoard = styled.div`
   height: 200px;
-  border: 1px solid black;
-  // width: 80%;
 `;
 const BaseballField = styled.div`
-  // width: 80%;
   height: 700px;
   display: flex;
   justify-content: space-between;
-  border: 1px solid black;
+  border-top: 4px solid #777;
+  border-right: 4px solid #777;
 `;
 
 const PlayerProgress = styled.div`
   display: flex;
   flex-direction: column;
   width: 20%;
-  border: 1px solid black;
 `;
 const CurrentPlayerContainer = styled.div`
+  box-sizing: border-box;
   height: 200px;
-  // width: 20%;
-  border: 1px solid black;
+  padding: 20px;
+  border-left: 4px solid #777;
+  border-bottom: 4px solid #777;
 `;
 const PlayerHistoryContainer = styled.div`
-  // width: 20%;
   height: 700px;
-  border: 1px solid black;
 `;
 const TopPopupArea = styled.section`
   width: 1200px;

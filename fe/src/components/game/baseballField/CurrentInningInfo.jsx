@@ -11,6 +11,12 @@ const CurrentInningInfo = ({ inning }) => {
 export default CurrentInningInfo;
 
 const InningInfoBox = styled.div`
-  width: 150px;
+  /* outline: 1px solid #fff; */
+  width: 220px;
+  padding: 20px 15px;
+  box-sizing: border-box;
+  font-size: 25px;
+  font-weight: 700;
+  color: #eee;
   text-align: center;
 `;

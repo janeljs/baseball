@@ -36,7 +36,7 @@ const Main = () => {
 
   return (
     <MainContainer>
-      <Title />
+      <Title isMain={true} />
       <Message />
       <TeamMatchContainer>
         {teamList.length > 0 &&
@@ -61,7 +61,6 @@ const MainContainer = styled.div`
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
-  background-color: rgba(0, 0, 0, 0.9);
 `;
 
 const TeamMatchContainer = styled.div`
