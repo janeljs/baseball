@@ -1,6 +1,5 @@
-const hit = (currSBO, currHitter, dispatch, ...fns) => {
+const hit = (diamondQueue, currAttackTeam, currSBO, currHitter, dispatch, ...fns) => {
   const { currS, currB, currO } = currSBO;
-  dispatch({ type: "currH", init: false, payload: 1 });
   dispatch({ type: "currH", init: false, payload: 1 });
 
   const copiedPreStateOfHitter = {
@@ -21,6 +20,18 @@ const hit = (currSBO, currHitter, dispatch, ...fns) => {
     type: "currHitter",
     ...copiedPreStateOfHitter,
   });
+  // const newDiamondQueue = [...diamondQueue, currHitter];
+  // if (newDiamondQueue.length > 3) {
+  //   newDiamondQueue.shift();
+  //   dispatch({
+  //     type: "currAttackTeam",
+  //     team: { ...currAttackTeam, totalScore: currAttackTeam.totalScore + 1 },
+  //   });
+  // }
+  // dispatch({
+  //   type: "diamondQueue",
+  //   diamondQueue: newDiamondQueue,
+  // });
 
   fns.forEach((fn) => fn());
 };

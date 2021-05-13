@@ -12,7 +12,7 @@ const Teams = ({ teamSet }) => {
     const isHome = idx === 1;
 
     requestPost(
-      getURL("game"),
+      getURL("/"),
       {
         myTeamId: teamId,
         counterTeamId: counterTeamId,
@@ -23,10 +23,7 @@ const Teams = ({ teamSet }) => {
       { type: "counterTeam", id: counterTeamId, name: counterTeamName }
     );
 
-    localStorage.setItem(
-      "selectedTeams",
-      JSON.stringify({ myTeam: teamId, counterTeam: counterTeamId })
-    );
+    localStorage.setItem("selectedTeams", JSON.stringify({ myTeam: teamId, counterTeam: counterTeamId }));
   };
 
   return (

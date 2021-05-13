@@ -12,7 +12,7 @@ const pitchResult = {
 
 const deepCopy = (arg) => JSON.parse(JSON.stringify(arg));
 
-const getURL = (param) => `http://52.78.64.148/${param}`;
+const getURL = (param) => `http://52.78.64.148/api/game/${param}`;
 
 const isEqual = (team1, team2) => team1.name === team2.name;
 
@@ -35,6 +35,7 @@ const dispatchAll = (stateArray, dispatch) => {
 };
 
 const requestPost = async (path, bodyObject, dispatch, ...optionalState) => {
+  console.log(bodyObject);
   const response = await fetch(path, {
     method: "post",
     headers: {
@@ -42,18 +43,16 @@ const requestPost = async (path, bodyObject, dispatch, ...optionalState) => {
     },
     body: JSON.stringify(bodyObject),
   });
-
   const gameData = await response.json();
   localStorage.setItem("matchId", gameData.matchId);
 
   const { expeditionTeam, homeTeam } = gameData;
-
-  if (gameData.inning.cycle === "초")
-    dispatch({ type: "currAttackTeam", team: deepCopy(expeditionTeam) });
-  if (gameData.inning.cycle === "말")
-    dispatch({ type: "currAttackTeam", team: deepCopy(homeTeam) });
+  console.log(expeditionTeam);
+  if (gameData.inning.cycle === "초") dispatch({ type: "currAttackTeam", team: deepCopy(expeditionTeam) });
+  if (gameData.inning.cycle === "말") dispatch({ type: "currAttackTeam", team: deepCopy(homeTeam) });
 
   const stateArray = [
+    ...optionalState,
     { type: "homeTeam", team: deepCopy(homeTeam) },
     { type: "expeditionTeam", team: deepCopy(expeditionTeam) },
     {
@@ -82,7 +81,6 @@ const requestPost = async (path, bodyObject, dispatch, ...optionalState) => {
       currTeamLog: deepCopy(gameData.teamLog.playerLog),
     },
     { type: "isResponseDone" },
-    ...optionalState,
   ];
   dispatchAll(stateArray, dispatch);
 };

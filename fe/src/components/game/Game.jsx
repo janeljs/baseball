@@ -15,9 +15,8 @@ import { getURL } from "../../utils/util";
 
 const Game = () => {
   const { globalState } = useContext(GlobalContext);
-  const { homeTeam, expeditionTeam, currInning, currTeamLog, isResponseDone } = globalState;
-  const { popupState, setPopupState } = useState(null);
-
+  const { myTeam, homeTeam, expeditionTeam, currInning, currTeamLog, isResponseDone } = globalState;
+  const [popupState, setPopupState] = useState([]);
   // 이닝 점수판 이벤트핸들러
   const handleMouseEnterOnPopup = async ({ target }, isTop) => {
     const matchId = localStorage.getItem("matchId");
@@ -26,9 +25,6 @@ const Game = () => {
 
     const response = await fetch(urlName);
     const popupData = await response.json();
-
-    console.log(popupData);
-
     setPopupState(popupData);
 
     target.style.transform = translateValue;
@@ -50,9 +46,9 @@ const Game = () => {
                 {/* style-component*/}
                 <Title />
                 <ScoreBox>
-                  <TeamScore isHome={false} team={expeditionTeam} />
+                  <TeamScore isMyTeam={myTeam.name === expeditionTeam.name} isHome={false} team={expeditionTeam} />
                   <span>VS</span>
-                  <TeamScore isHome team={homeTeam} />
+                  <TeamScore isMyTeam={myTeam.name === homeTeam.name} isHome team={homeTeam} />
                 </ScoreBox>
               </MainScoreBoard>
               <BaseballField>
@@ -80,12 +76,12 @@ const Game = () => {
                     .map((playerLog) => <PlayerHistory flag="pastPlayer" history={playerLog} />)}
               </PlayerHistoryContainer>
             </PlayerProgress>
-            {/* <TopPopupArea onMouseEnter={(e) => handleMouseEnterOnPopup(e, true)}>
+            <TopPopupArea onMouseEnter={(e) => handleMouseEnterOnPopup(e, true)}>
               <DetailScorePopup popupState={popupState} />
             </TopPopupArea>
             <BottomPopupArea>
               <PlayerListPopup />
-            </BottomPopupArea> */}
+            </BottomPopupArea>
           </GameContainer>
         </>
       )}

@@ -26,7 +26,7 @@ const Main = () => {
   const [teamList, setTeamList] = useState([]);
 
   useEffect(() => {
-    fetch(getURL("totalTeamList"))
+    fetch(getURL("/teams"))
       .then((res) => res.json())
       .then((json) => {
         const matchedTeamList = setMatches(json);

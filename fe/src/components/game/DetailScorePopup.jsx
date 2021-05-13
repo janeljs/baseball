@@ -1,24 +1,16 @@
 import React, { useContext } from "react";
-// import { detailScoreData } from "../../data";
 import styled from "styled-components";
 import { GlobalContext } from "../../App";
 import { isEqual, scoreParser } from "../../utils/util";
 
 const DetailScorePopup = ({ popupState }) => {
-  // console.log(popupState);
-
   const { globalState } = useContext(GlobalContext);
   const { currAttackTeam, expeditionTeam } = globalState;
+  if (popupState.length === 0) return <></>;
 
   const tableHead = ["", "", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, "R"];
-
   const [expedition, home] = scoreParser(popupState);
-
   isEqual(currAttackTeam, expeditionTeam) ? (expedition[0] = "⚾️") : (home[0] = "⚾️");
-
-  // console.log(expedition, home);
-  // const expedition = ["⚾️", "Captain", 1, 0, 0, 0, "", "", "", "", "", "", "", "", "1"];
-  // const home = ["", "Marvel", 1, 2, 2, "", "", "", "", "", "", "", "", "", "5"];
 
   return (
     <ScorePopup>

@@ -13,6 +13,7 @@ const initialValue = {
   currO: 0,
   isResponseDone: false,
   currAttackTeam: null,
+  diamondQueue: [],
 };
 
 function reducer(state, action) {
@@ -64,6 +65,8 @@ function reducer(state, action) {
       return { ...state, isResponseDone: true };
     case "currAttackTeam":
       return { ...state, currAttackTeam: action.team };
+    case "diamondQueue":
+      return { ...state, diamondQueue: action.diamondQueue };
   }
 }
 
