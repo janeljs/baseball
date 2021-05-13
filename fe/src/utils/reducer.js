@@ -1,3 +1,20 @@
+const initialValue = {
+  myTeam: null,
+  counterTeam: null,
+  homeTeam: null,
+  expeditionTeam: null,
+  currInning: null,
+  currPitcher: null,
+  currHitter: null,
+  currTeamLog: null,
+  currS: 0,
+  currB: 0,
+  currH: 0,
+  currO: 0,
+  isResponseDone: false,
+  currAttackTeam: null,
+};
+
 function reducer(state, action) {
   switch (action.type) {
     case "myTeam":
@@ -50,4 +67,4 @@ function reducer(state, action) {
   }
 }
 
-export default reducer;
+export { initialValue, reducer };
