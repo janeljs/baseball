@@ -5,8 +5,12 @@ import { isEqual, scoreParser } from "../../utils/util";
 
 const DetailScorePopup = ({ popupState }) => {
   const { globalState } = useContext(GlobalContext);
-  const { currAttackTeam, expeditionTeam } = globalState;
+  const { currAttackTeam, expeditionTeam, myTeam, homeTeam } = globalState;
   if (popupState.length === 0) return <></>;
+
+  const isMyTeam = (team, i) => team.name === myTeam.name && i === 1;
+
+  const isTotalScore = (i, array) => i === array.length - 1;
 
   const tableHead = ["", "", 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, "R"];
   const [expedition, home] = scoreParser(popupState);
@@ -15,17 +19,27 @@ const DetailScorePopup = ({ popupState }) => {
   return (
     <ScorePopup>
       <ScoreTable>
-        {tableHead.map((e, i) => (
-          <InningNumber border={i >= 2}>{e}</InningNumber>
+        {tableHead.map((el, i) => (
+          <InningNumber border={i >= 2}>{el}</InningNumber>
         ))}
-        {expedition.map((e, i) => (
-          <Score color={i === expedition.length - 1 && "red"} weight={i >= 2} align={i === 0}>
-            {e}
+        {expedition.map((el, i) => (
+          <Score
+            color={
+              isTotalScore(i, expedition) ? "red" : isMyTeam(expeditionTeam, i) ? "blue" : "white"
+            }
+            weight={i >= 2}
+            align={i === 0}
+          >
+            {el}
           </Score>
         ))}
-        {home.map((e, i) => (
-          <Score color={i === expedition.length - 1 && "red"} weight={i >= 2} align={i === 0}>
-            {e}
+        {home.map((el, i) => (
+          <Score
+            color={isTotalScore(i, home) ? "red" : isMyTeam(homeTeam, i) ? "blue" : "white"}
+            weight={i >= 2}
+            align={i === 0}
+          >
+            {el}
           </Score>
         ))}
       </ScoreTable>

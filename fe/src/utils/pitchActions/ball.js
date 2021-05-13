@@ -47,20 +47,6 @@ const ball = (diamondQueue, currAttackTeam, currSBO, currHitter, dispatch, ...fn
     ...copiedPreStateOfHitter,
   });
 
-  // const newDiamondQueue = [...diamondQueue, currHitter];
-  // if (newDiamondQueue.length > 3) {
-  //   newDiamondQueue.shift();
-  //   dispatch({
-  //     type: "currAttackTeam",
-  //     team: { ...currAttackTeam, totalScore: currAttackTeam.totalScore + 1 },
-  //   });
-  // }
-
-  // dispatch({
-  //   type: "diamondQueue",
-  //   diamondQueue: newDiamondQueue,
-  // });
-
   fns.forEach((fn) => fn());
 };
 export default ball;

@@ -20,18 +20,6 @@ const hit = (diamondQueue, currAttackTeam, currSBO, currHitter, dispatch, ...fns
     type: "currHitter",
     ...copiedPreStateOfHitter,
   });
-  // const newDiamondQueue = [...diamondQueue, currHitter];
-  // if (newDiamondQueue.length > 3) {
-  //   newDiamondQueue.shift();
-  //   dispatch({
-  //     type: "currAttackTeam",
-  //     team: { ...currAttackTeam, totalScore: currAttackTeam.totalScore + 1 },
-  //   });
-  // }
-  // dispatch({
-  //   type: "diamondQueue",
-  //   diamondQueue: newDiamondQueue,
-  // });
 
   fns.forEach((fn) => fn());
 };

@@ -17,8 +17,12 @@ const Game = () => {
   const { globalState } = useContext(GlobalContext);
   const { myTeam, homeTeam, expeditionTeam, currInning, currTeamLog, isResponseDone } = globalState;
   const [popupState, setPopupState] = useState([]);
+  const [mouseEnterTopState, setMouseEnterTopState] = useState(false);
+
   // 이닝 점수판 이벤트핸들러
-  const handleMouseEnterOnPopup = async ({ target }, isTop) => {
+  const handleMouseEnterOnPopup = async (target, isTop) => {
+    if (mouseEnterTopState) return;
+    setMouseEnterTopState(true);
     const matchId = localStorage.getItem("matchId");
     const urlName = getURL(`/${matchId}/record/${isTop ? "teams" : "players"}`);
     const translateValue = `translateY(${isTop ? 880 : -880}px)`;
@@ -31,7 +35,11 @@ const Game = () => {
     target.style.background = `rgba(0, 0, 0, 0.9)`;
   };
 
-  const handleClickOutOfPopup = () => {};
+  const handleClickOutOfPopup = (target) => {
+    setMouseEnterTopState(false);
+    target.style.transform = `translateY(0px)`;
+    target.style.background = `transparent`;
+  };
 
   return (
     <>
@@ -46,7 +54,11 @@ const Game = () => {
                 {/* style-component*/}
                 <Title />
                 <ScoreBox>
-                  <TeamScore isMyTeam={myTeam.name === expeditionTeam.name} isHome={false} team={expeditionTeam} />
+                  <TeamScore
+                    isMyTeam={myTeam.name === expeditionTeam.name}
+                    isHome={false}
+                    team={expeditionTeam}
+                  />
                   <span>VS</span>
                   <TeamScore isMyTeam={myTeam.name === homeTeam.name} isHome team={homeTeam} />
                 </ScoreBox>
@@ -76,12 +88,17 @@ const Game = () => {
                     .map((playerLog) => <PlayerHistory flag="pastPlayer" history={playerLog} />)}
               </PlayerHistoryContainer>
             </PlayerProgress>
-            <TopPopupArea onMouseEnter={(e) => handleMouseEnterOnPopup(e, true)}>
+            <TopPopupArea
+              onMouseEnter={({ target }) => handleMouseEnterOnPopup(target, true)}
+              onClick={({ target }) => handleClickOutOfPopup(target)}
+            >
+              {/* <TopPopupArea onMouseEnter={(e) => handleMouseEnterOnPopup(e,
+                 true)}> */}
               <DetailScorePopup popupState={popupState} />
             </TopPopupArea>
-            <BottomPopupArea>
-              <PlayerListPopup />
-            </BottomPopupArea>
+            {/* <BottomPopupArea onMouseEnter={(e) => handleMouseEnterOnPopup(e, false)}>
+              <PlayerListPopup popupState={popupState} />
+            </BottomPopupArea> */}
           </GameContainer>
         </>
       )}
@@ -157,7 +174,7 @@ const TopPopupArea = styled.section`
 const BottomPopupArea = styled.section`
   border: 1px solid blue;
   width: 1200px;
-  height: 500px;
+  height: 900px;
   position: absolute;
-  bottom: -450px;
+  // bottom: -450px;
 `;

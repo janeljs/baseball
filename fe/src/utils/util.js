@@ -35,7 +35,6 @@ const dispatchAll = (stateArray, dispatch) => {
 };
 
 const requestPost = async (path, bodyObject, dispatch, ...optionalState) => {
-  console.log(bodyObject);
   const response = await fetch(path, {
     method: "post",
     headers: {
@@ -47,9 +46,10 @@ const requestPost = async (path, bodyObject, dispatch, ...optionalState) => {
   localStorage.setItem("matchId", gameData.matchId);
 
   const { expeditionTeam, homeTeam } = gameData;
-  console.log(expeditionTeam);
-  if (gameData.inning.cycle === "초") dispatch({ type: "currAttackTeam", team: deepCopy(expeditionTeam) });
-  if (gameData.inning.cycle === "말") dispatch({ type: "currAttackTeam", team: deepCopy(homeTeam) });
+  if (gameData.inning.cycle === "초")
+    dispatch({ type: "currAttackTeam", team: deepCopy(expeditionTeam) });
+  if (gameData.inning.cycle === "말")
+    dispatch({ type: "currAttackTeam", team: deepCopy(homeTeam) });
 
   const stateArray = [
     ...optionalState,
