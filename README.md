@@ -40,13 +40,16 @@
 
 <br/>
 
+# 배포 주소
+👉 http://52.78.64.148/
+
 # 설계
 ### 컴포넌트 트리
 ![image](https://user-images.githubusercontent.com/68000537/117391576-27bbb680-af2b-11eb-9f6a-7c9bd5241f3f.png)
 
 
 ### API 명세서
-👉 https://documenter.getpostman.com/view/15287546/TzRRBnRe
+👉 https://documenter.getpostman.com/view/15277314/TzRU9S7b
 
 ### ERD
 ![ERD](https://user-images.githubusercontent.com/68000537/117412301-99a5f700-af4f-11eb-8895-8d51a76e17e5.png)
