@@ -16,29 +16,37 @@ import { getURL } from "../../utils/util";
 const Game = () => {
   const { globalState } = useContext(GlobalContext);
   const { myTeam, homeTeam, expeditionTeam, currInning, currTeamLog, isResponseDone } = globalState;
-  const [popupState, setPopupState] = useState([]);
+  const [topPopupState, setTopPopupState] = useState([]);
+  const [bottomPopupState, setBottomPopupState] = useState([]);
   const [mouseEnterTopState, setMouseEnterTopState] = useState(false);
+  const [mouseEnterBottomState, setMouseEnterBottomState] = useState(false);
 
   // 이닝 점수판 이벤트핸들러
   const handleMouseEnterOnPopup = async (target, isTop) => {
-    if (mouseEnterTopState) return;
-    setMouseEnterTopState(true);
+    if (isTop) {
+      if (mouseEnterTopState) return;
+      setMouseEnterTopState(true);
+    }
+    if (!isTop) {
+      if (mouseEnterBottomState) return;
+      setMouseEnterBottomState(true);
+    }
     const matchId = localStorage.getItem("matchId");
     const urlName = getURL(`/${matchId}/record/${isTop ? "teams" : "players"}`);
     const translateValue = `translateY(${isTop ? 880 : -880}px)`;
 
     const response = await fetch(urlName);
     const popupData = await response.json();
-    setPopupState(popupData);
+    isTop ? setTopPopupState(popupData) : setBottomPopupState(popupData);
 
     target.style.transform = translateValue;
     target.style.background = `rgba(0, 0, 0, 0.9)`;
   };
 
-  const handleClickOutOfPopup = (target) => {
-    setMouseEnterTopState(false);
+  const handleClickOutOfPopup = (target, isTop) => {
     target.style.transform = `translateY(0px)`;
     target.style.background = `transparent`;
+    isTop ? setMouseEnterTopState(false) : setMouseEnterBottomState(false);
   };
 
   return (
@@ -54,7 +62,11 @@ const Game = () => {
                 {/* style-component*/}
                 <Title isMain={false} />
                 <ScoreBox>
-                  <TeamScore isMyTeam={myTeam.name === expeditionTeam.name} isHome={false} team={expeditionTeam} />
+                  <TeamScore
+                    isMyTeam={myTeam.name === expeditionTeam.name}
+                    isHome={false}
+                    team={expeditionTeam}
+                  />
                   <span>VS</span>
                   <TeamScore isMyTeam={myTeam.name === homeTeam.name} isHome team={homeTeam} />
                 </ScoreBox>
@@ -86,15 +98,16 @@ const Game = () => {
             </PlayerProgress>
             <TopPopupArea
               onMouseEnter={({ target }) => handleMouseEnterOnPopup(target, true)}
-              onClick={({ target }) => handleClickOutOfPopup(target)}
+              onClick={({ target }) => handleClickOutOfPopup(target, true)}
             >
-              {/* <TopPopupArea onMouseEnter={(e) => handleMouseEnterOnPopup(e,
-                 true)}> */}
-              <DetailScorePopup popupState={popupState} />
+              <DetailScorePopup popupState={topPopupState} />
             </TopPopupArea>
-            {/* <BottomPopupArea onMouseEnter={(e) => handleMouseEnterOnPopup(e, false)}>
-              <PlayerListPopup popupState={popupState} />
-            </BottomPopupArea> */}
+            <BottomPopupArea
+              onMouseEnter={({ target }) => handleMouseEnterOnPopup(target, false)}
+              onClick={({ target }) => handleClickOutOfPopup(target, false)}
+            >
+              <PlayerListPopup popupState={bottomPopupState} />
+            </BottomPopupArea>
           </GameContainer>
         </>
       )}
@@ -114,6 +127,7 @@ const GameContainer = styled.section`
   background-repeat: no-repeat;
   background-size: cover;
   position: relative;
+  overflow: hidden;
 `;
 
 const GameProgress = styled.div`
@@ -173,12 +187,12 @@ const TopPopupArea = styled.section`
   position: absolute;
   top: -880px;
   transition: 500ms;
-  // top: 0;
 `;
 const BottomPopupArea = styled.section`
-  border: 1px solid blue;
+  padding-top: 50px;
   width: 1200px;
   height: 900px;
   position: absolute;
-  // bottom: -450px;
+  top: 880px;
+  transition: 500ms;
 `;

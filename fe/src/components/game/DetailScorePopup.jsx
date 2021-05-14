@@ -24,7 +24,13 @@ const DetailScorePopup = ({ popupState }) => {
         ))}
         {expedition.map((el, i) => (
           <Score
-            color={isTotalScore(i, expedition) ? "#eb4833" : isMyTeam(expeditionTeam, i) ? "#3336eb" : "white"}
+            color={
+              isTotalScore(i, expedition)
+                ? "#eb4833"
+                : isMyTeam(expeditionTeam, i)
+                ? "#3336eb"
+                : "white"
+            }
             weight={i >= 2}
             align={i === 0}
           >
@@ -63,7 +69,6 @@ const ScoreTable = styled.div`
 const InningNumber = styled.div`
   color: #eee;
   text-align: center;
-
   font-size: 1.6rem;
   font-weight: 900;
   border-bottom: ${({ border }) => border && "3px solid #eee"};
