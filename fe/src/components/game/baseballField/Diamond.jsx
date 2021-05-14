@@ -74,8 +74,7 @@ const Diamond = () => {
 
   const handlePitch = () => {
     const { currPitcher } = globalState;
-    // const actions = ["hit", "strike", "strike", "strike", "ball", "ball", "ball"];
-    const actions = ["hit", "hit", "hit"];
+    const actions = ["hit", "strike", "strike", "strike", "ball", "ball", "ball"];
     const selectedIndex = parseInt(Math.random() * actions.length);
     const pitchResult = actions[selectedIndex];
     alert(`결과: ${pitchResult}`); // 일단!!!
