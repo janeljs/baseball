@@ -30,14 +30,22 @@ public class GameService {
         Match match = createMatch(teamInfo);
 
         setMyTeamIsUserTrue(match);
-
         initializeTeamScore(match);
         Team offenseTeam = findFirstOffenseTeam(match);
+        reset(offenseTeam);
+        Team defenseTeam = findFirstDefenseTeam(match);
+        reset(defenseTeam);
         setOffenseTeamDefaultScore(offenseTeam);
 
         Player firstHitter = offenseTeam.getFirstHitter();
-        Player pitcher = findFirstDefenseTeam(match).getPitcher();
+        Player pitcher = defenseTeam.getPitcher();
         return createApiResponse(match, offenseTeam, firstHitter, pitcher);
+    }
+
+    private void reset(Team team) {
+        for (Player player : team.getPlayerList()) {
+            player.getPlayerGameInfo().reset();
+        }
     }
 
     public ApiResponse createApiResponse(Match match, Team offenseTeam, Player hitter, Player pitcher) {
@@ -72,16 +80,13 @@ public class GameService {
 
     private Team findFirstOffenseTeam(Match match) {
         if (match.isHome()) {
-            return findTeam(match.getExpeditionTeamId());
+            return findTeam(match.getCounterTeamId());
         }
-        return findTeam(match.getHomeTeamId());
+        return findTeam(match.getMyTeamId());
     }
 
     private Team findFirstDefenseTeam(Match match) {
-        if (match.isHome()) {
-            return findTeam(match.getHomeTeamId());
-        }
-        return findTeam(match.getExpeditionTeamId());
+        return findTeam(match.getHomeTeamId());
     }
 
     public PlayerListPopUpDTO[] getPlayerInfo(Long matchId) {
