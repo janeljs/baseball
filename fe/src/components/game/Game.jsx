@@ -171,7 +171,7 @@ const PlayerProgress = styled.div`
 const CurrentPlayerContainer = styled.div`
   box-sizing: border-box;
   height: 200px;
-  padding: 20px;
+  padding: 20px 13px;
   border-left: 4px solid #777;
   border-bottom: 4px solid #777;
 `;
