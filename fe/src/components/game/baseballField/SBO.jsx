@@ -2,42 +2,73 @@ import React, { useContext } from "react";
 import styled from "styled-components";
 import { GlobalContext } from "../../../App";
 
-const SBO = (props) => {
+const ballColor = {
+  S: "#E2CF2D",
+  B: "#3F8720",
+  O: "#BB352B",
+};
+
+const SBO = () => {
   const { globalState } = useContext(GlobalContext);
   const { currS, currB, currO } = globalState;
 
   return (
-    <ul>
+    <SBOList>
       <SBOItem>
         <SBOKind>S</SBOKind>
-        <SBOCount>{Array.from({ length: currS }).map(() => "🟡")}</SBOCount>
+        <SBOCount>
+          {Array.from({ length: currS }).map(() => (
+            <SBOBall color={ballColor.S}></SBOBall>
+          ))}
+        </SBOCount>
       </SBOItem>
       <SBOItem>
         <SBOKind>B</SBOKind>
-        <SBOCount>{Array.from({ length: currB }).map(() => "🟢")}</SBOCount>
+        <SBOCount>
+          {Array.from({ length: currB }).map(() => (
+            <SBOBall color={ballColor.B}></SBOBall>
+          ))}
+        </SBOCount>
       </SBOItem>
       <SBOItem>
         <SBOKind>O</SBOKind>
-        <SBOCount>{Array.from({ length: currO }).map(() => "🔴")}</SBOCount>
+        <SBOCount>
+          {Array.from({ length: currO }).map(() => (
+            <SBOBall color={ballColor.O}></SBOBall>
+          ))}
+        </SBOCount>
       </SBOItem>
-    </ul>
+    </SBOList>
   );
 };
 
 export default SBO;
 
+const SBOList = styled.ul`
+  padding: 20px 10px;
+`;
+
 const SBOItem = styled.li`
   display: flex;
-  & div {
-    height: 20px;
-  }
 `;
 
 const SBOKind = styled.div`
-  width: 20px;
+  width: 40px;
+  font-size: 30px;
+  color: #eee;
+  font-weight: 900;
   text-align: center;
 `;
 
 const SBOCount = styled.div`
-  width: 80px;
+  width: 100px;
+  display: flex;
+`;
+
+const SBOBall = styled.div`
+  width: 23px;
+  height: 23px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: ${({ color }) => color};
 `;

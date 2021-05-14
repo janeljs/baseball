@@ -35,23 +35,39 @@ const Main = () => {
   }, []);
 
   return (
-    <>
-      <Title />
+    <MainContainer>
+      <Title isMain={true} />
       <Message />
       <TeamMatchContainer>
         {teamList.length > 0 &&
-          [...teamList].map((teamSet) => {
-            return <Teams teamSet={teamSet} />;
+          [...teamList].map((teamSet, i) => {
+            return <Teams teamSet={teamSet} order={i} />;
           })}
       </TeamMatchContainer>
-    </>
+    </MainContainer>
   );
 };
 
 export default Main;
 
+const MainContainer = styled.div`
+  box-sizing: border-box;
+  width: 1200px;
+  height: 900px;
+  padding: 30px;
+  position: relative;
+  background-image: linear-gradient(0deg, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)),
+    url("https://static.vecteezy.com/system/resources/previews/000/236/108/original/baseball-stadium-background-vector.jpg");
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+`;
+
 const TeamMatchContainer = styled.div`
-  border: 1px solid red;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 500px;
   display: flex;
   flex-direction: column;
 `;

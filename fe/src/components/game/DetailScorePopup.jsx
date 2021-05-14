@@ -24,9 +24,7 @@ const DetailScorePopup = ({ popupState }) => {
         ))}
         {expedition.map((el, i) => (
           <Score
-            color={
-              isTotalScore(i, expedition) ? "red" : isMyTeam(expeditionTeam, i) ? "blue" : "white"
-            }
+            color={isTotalScore(i, expedition) ? "#eb4833" : isMyTeam(expeditionTeam, i) ? "#3336eb" : "white"}
             weight={i >= 2}
             align={i === 0}
           >
@@ -35,7 +33,7 @@ const DetailScorePopup = ({ popupState }) => {
         ))}
         {home.map((el, i) => (
           <Score
-            color={isTotalScore(i, home) ? "red" : isMyTeam(homeTeam, i) ? "blue" : "white"}
+            color={isTotalScore(i, home) ? "#eb4833" : isMyTeam(homeTeam, i) ? "#3336eb" : "white"}
             weight={i >= 2}
             align={i === 0}
           >
@@ -54,28 +52,26 @@ const ScorePopup = styled.div`
   height: 170px;
   padding: 25px 60px;
   box-sizing: border-box;
-  border: 3px solid white;
+  border: 3px solid #eee;
 `;
 
 const ScoreTable = styled.div`
   display: grid;
   grid-template-columns: 1fr 2fr repeat(13, 1fr);
-  /* gap: 5px; */
 `;
 
 const InningNumber = styled.div`
-  color: #fff;
-  /* outline: 1px solid gold; */
+  color: #eee;
   text-align: center;
 
   font-size: 1.6rem;
   font-weight: 900;
-  border-bottom: ${({ border }) => border && "3px solid #fff"};
+  border-bottom: ${({ border }) => border && "3px solid #eee"};
   padding-bottom: 5px;
 `;
 
 const Score = styled.div`
-  color: ${({ color }) => color || "#fff"};
+  color: ${({ color }) => color || "#eee"};
   text-align: ${({ align }) => (align ? "right" : "center")};
   font-size: 1.6rem;
   font-weight: ${({ weight }) => (weight ? "900" : "600")};
