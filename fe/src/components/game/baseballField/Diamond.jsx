@@ -88,7 +88,12 @@ const Diamond = (props) => {
 
   return (
     <DiamondField>
-      <div>다이아몬드 경기장을 넣을 거임</div>
+      <Field>
+        <Plate></Plate>
+        <Base1></Base1>
+        <Base2></Base2>
+        <Base3></Base3>
+      </Field>
       <PitchButton onClick={handlePitch}>PITCH</PitchButton>
     </DiamondField>
   );
@@ -99,6 +104,52 @@ export default Diamond;
 const DiamondField = styled.div`
   width: 100%;
   position: relative;
+`;
+
+const Field = styled.div`
+  outline: 5px solid olive;
+  width: 454px;
+  height: 398px;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 200px) rotate(-35.6deg) skew(32deg, 13deg) scale(0.9);
+`;
+
+const Plate = styled.div`
+  width: 45px;
+  height: 40px;
+  background: #ddd;
+  position: absolute;
+  top: 372px;
+  left: -14px;
+`;
+
+const Base1 = styled.div`
+  width: 33px;
+  height: 33px;
+  border-radius: 50%;
+  background: gold;
+  position: absolute;
+  top: 378px;
+  left: 435px;
+`;
+const Base2 = styled.div`
+  width: 33px;
+  height: 33px;
+  border-radius: 50%;
+  background: orange;
+  position: absolute;
+  top: -16px;
+  left: 437px;
+`;
+const Base3 = styled.div`
+  width: 33px;
+  height: 33px;
+  border-radius: 50%;
+  background: #eb4833;
+  position: absolute;
+  top: -14px;
+  left: -13px;
 `;
 
 const PitchButton = styled.button`
@@ -112,7 +163,6 @@ const PitchButton = styled.button`
   cursor: pointer;
 
   position: absolute;
-  top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, 400px);
 `;
