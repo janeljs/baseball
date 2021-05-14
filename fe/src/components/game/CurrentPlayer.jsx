@@ -24,7 +24,7 @@ const CurrentPlayer = ({ playerRole }) => {
 export default CurrentPlayer;
 
 const CurrPlayerBox = styled.div`
-  padding: 15px 10px;
+  padding: 15px 0;
   font-weight: 700;
 `;
 const PlayerRole = styled.div`
