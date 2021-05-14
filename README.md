@@ -38,10 +38,8 @@
 ### 이슈
 <img src="https://user-images.githubusercontent.com/68000537/117389977-466c7e00-af28-11eb-8353-967c7fbb80b9.png" alt="drawing" width="700"/>
 
-<br/>
 
-# 배포 주소
-👉 http://52.78.64.148/
+<br/>
 
 # 설계
 ### 컴포넌트 트리
